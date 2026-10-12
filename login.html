@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In / Register — CampusHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0f172a] text-slate-100 font-sans antialiased flex flex-col min-h-screen selection:bg-orange-500 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-bold text-base shadow-lg shadow-orange-600/30">C</span>
+                <span class="text-xl font-bold tracking-tight text-white">CampusHub</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="index.html" class="hover:text-white transition-colors">Overview</a>
+                <a href="events.html" class="hover:text-white transition-colors">Directory</a>
+                <a href="dashboard.html" class="hover:text-white transition-colors">Dashboard</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="login.html" class="text-orange-500 px-4 py-2 text-sm font-semibold transition-colors">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center px-6 py-12 w-full">
+        <div class="w-full max-w-md bg-slate-900/80 rounded-2xl border border-slate-800 p-8 shadow-2xl">
+            
+            <!-- Tab Switcher -->
+            <div class="flex rounded-xl bg-slate-950 p-1 mb-8 border border-slate-800">
+                <button id="loginTabBtn" onclick="switchTab('login')" class="flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all text-white bg-orange-600 shadow-lg shadow-orange-600/20">Sign In</button>
+                <button id="registerTabBtn" onclick="switchTab('register')" class="flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-white">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-5">
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
+                    <p class="text-slate-400 text-xs mt-1">Enter your university credentials to access your account</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">University Email</label>
+                    <input type="email" id="loginEmail" required placeholder="student@university.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-orange-600/30 text-sm mt-2">Sign In</button>
+            </form>
+
+            <!-- Signup Form (Hidden by default) -->
+            <form id="registerForm" class="space-y-4 hidden">
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Create an account</h1>
+                    <p class="text-slate-400 text-xs mt-1">Join CampusHub to register and host events</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Full Name</label>
+                    <input type="text" id="regName" required placeholder="Alex Johnson" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Student ID</label>
+                    <input type="text" id="regStudentId" required placeholder="CS-2026-4091" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">University Email</label>
+                    <input type="email" id="regEmail" required placeholder="alex@university.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Password</label>
+                    <input type="password" id="regPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-orange-600/30 text-sm mt-2">Create Account</button>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 px-6 text-center text-sm text-slate-400">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 CampusHub. Built for student collaboration.</p>
+            <div class="flex gap-6 text-slate-400 font-medium">
+                <a href="index.html" class="hover:text-white">Privacy</a>
+                <a href="index.html" class="hover:text-white">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tab Switcher Script -->
+    <script>
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginBtn = document.getElementById('loginTabBtn');
+            const registerBtn = document.getElementById('registerTabBtn');
+
+            if (tab === 'register') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                registerBtn.className = "flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all text-white bg-orange-600 shadow-lg shadow-orange-600/20";
+                loginBtn.className = "flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-white";
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                loginBtn.className = "flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all text-white bg-orange-600 shadow-lg shadow-orange-600/20";
+                registerBtn.className = "flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-white";
+            }
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'register') {
+            switchTab('register');
+        }
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>
