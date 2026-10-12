@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Event Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">
+          <div class="brand-mark">C</div>
+          <span>CampusFlow</span>
+        </div>
+        <nav>
+          <a href="#home">Home</a>
+          <a href="#events">Events</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#team">Team</a>
+        </nav>
+        <button class="cta">Create Event</button>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Campus event hub</p>
+            <h1>Plan, promote, and manage every campus moment.</h1>
+            <p class="subtitle">
+              Coordinate student activities, track registrations, and keep your campus community engaged from idea to execution.
+            </p>
+            <div class="hero-actions">
+              <button class="primary">Book a Demo</button>
+              <button class="secondary">View Events</button>
+            </div>
+            <div class="stats">
+              <div>
+                <strong>180+</strong>
+                <span>Events hosted</span>
+              </div>
+              <div>
+                <strong>12k</strong>
+                <span>Students reached</span>
+              </div>
+              <div>
+                <strong>96%</strong>
+                <span>Attendance rate</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-panel">
+            <div class="panel-card">
+              <div class="panel-head">
+                <span class="dot green"></span>
+                <span>Live events</span>
+              </div>
+              <div class="event-mini">
+                <div>
+                  <p class="small-label">Next up</p>
+                  <h3>Hackathon 2026</h3>
+                </div>
+                <span class="chip success">Open</span>
+              </div>
+              <ul class="mini-list">
+                <li><span>Registrations</span><strong>421</strong></li>
+                <li><span>Volunteers</span><strong>28</strong></li>
+                <li><span>Room status</span><strong>Booked</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="events" class="events">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Event overview</p>
+              <h2>Upcoming campus events</h2>
+            </div>
+            <div class="filters" aria-label="Event filters">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="Academic">Academic</button>
+              <button class="filter-btn" data-filter="Cultural">Cultural</button>
+              <button class="filter-btn" data-filter="Sports">Sports</button>
+              <button class="filter-btn" data-filter="Tech">Tech</button>
+            </div>
+          </div>
+
+          <div class="searchbar">
+            <input id="searchInput" type="text" placeholder="Search events or organizers..." />
+          </div>
+
+          <div id="eventGrid" class="event-grid">
+            <article class="event-card" data-category="Tech" data-name="AI & Innovation Expo">
+              <div class="card-top">
+                <span class="tag tech">Tech</span>
+                <span class="date">Oct 18</span>
+              </div>
+              <h3>AI & Innovation Expo</h3>
+              <p>Student-built prototypes and startup showcases from across campus.</p>
+              <div class="meta">
+                <span>Innovation Hall</span>
+                <span>320 seats</span>
+              </div>
+              <div class="card-footer">
+                <strong>96 RSVP</strong>
+                <button>Join</button>
+              </div>
+            </article>
+
+            <article class="event-card" data-category="Cultural" data-name="Cultural Night Festival">
+              <div class="card-top">
+                <span class="tag culture">Cultural</span>
+                <span class="date">Oct 21</span>
+              </div>
+              <h3>Cultural Night Festival</h3>
+              <p>Music, dance, and food traditions brought together in one celebration.</p>
+              <div class="meta">
+                <span>Main Stage</span>
+                <span>500 seats</span>
+              </div>
+              <div class="card-footer">
+                <strong>180 RSVP</strong>
+                <button>Join</button>
+              </div>
+            </article>
+
+            <article class="event-card" data-category="Academic" data-name="Research Symposium">
+              <div class="card-top">
+                <span class="tag academic">Academic</span>
+                <span class="date">Oct 24</span>
+              </div>
+              <h3>Research Symposium</h3>
+              <p>Faculty and student research presentations with poster sessions and talks.</p>
+              <div class="meta">
+                <span>Lecture Center</span>
+                <span>250 seats</span>
+              </div>
+              <div class="card-footer">
+                <strong>142 RSVP</strong>
+                <button>Join</button>
+              </div>
+            </article>
+
+            <article class="event-card" data-category="Sports" data-name="Inter-College Sports Fest">
+              <div class="card-top">
+                <span class="tag sports">Sports</span>
+                <span class="date">Oct 29</span>
+              </div>
+              <h3>Inter-College Sports Fest</h3>
+              <p>Track events, volleyball, football, and team challenges across departments.</p>
+              <div class="meta">
+                <span>North Field</span>
+                <span>600 seats</span>
+              </div>
+              <div class="card-footer">
+                <strong>210 RSVP</strong>
+                <button>Join</button>
+              </div>
+            </article>
+
+            <article class="event-card" data-category="Tech" data-name="Startup Founders Meetup">
+              <div class="card-top">
+                <span class="tag tech">Tech</span>
+                <span class="date">Nov 02</span>
+              </div>
+              <h3>Startup Founders Meetup</h3>
+              <p>Pitch sessions and founder networking for student startups and mentors.</p>
+              <div class="meta">
+                <span>Business Hub</span>
+                <span>180 seats</span>
+              </div>
+              <div class="card-footer">
+                <strong>88 RSVP</strong>
+                <button>Join</button>
+              </div>
+            </article>
+
+            <article class="event-card" data-category="Academic" data-name="Career & Internship Fair">
+              <div class="card-top">
+                <span class="tag academic">Academic</span>
+                <span class="date">Nov 04</span>
+              </div>
+              <h3>Career & Internship Fair</h3>
+              <p>Meet employers, explore internship listings, and connect for placement support.</p>
+              <div class="meta">
+                <span>Student Center</span>
+                <span>420 seats</span>
+              </div>
+              <div class="card-footer">
+                <strong>310 RSVP</strong>
+                <button>Join</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="schedule" class="schedule">
+        <div class="container schedule-wrap">
+          <div class="schedule-copy">
+            <p class="eyebrow">Operations</p>
+            <h2>Everything your event team needs in one place.</h2>
+            <ul>
+              <li>Easy registration tracking and attendee check-ins</li>
+              <li>Budget, tasks, and volunteer assignment tools</li>
+              <li>Live updates and notifications for all stakeholders</li>
+            </ul>
+          </div>
+
+          <div class="schedule-board">
+            <div class="board-row">
+              <span>09:00 AM</span>
+              <div>
+                <strong>Campus Welcome</strong>
+                <small>Registration desk open</small>
+              </div>
+            </div>
+            <div class="board-row">
+              <span>10:30 AM</span>
+              <div>
+                <strong>Opening Keynote</strong>
+                <small>Student Center Auditorium</small>
+              </div>
+            </div>
+            <div class="board-row">
+              <span>01:00 PM</span>
+              <div>
+                <strong>Workshop Sessions</strong>
+                <small>Five breakout rooms</small>
+              </div>
+            </div>
+            <div class="board-row">
+              <span>04:30 PM</span>
+              <div>
+                <strong>Closing Showcase</strong>
+                <small>Live demos and awards</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="team" class="team">
+        <div class="container">
+          <p class="eyebrow">Our team</p>
+          <h2>Built for event organizers and student leaders</h2>
+          <div class="team-grid">
+            <div class="team-card">
+              <h3>Student Affairs</h3>
+              <p>Manage event approvals, communication, and attendance.</p>
+            </div>
+            <div class="team-card">
+              <h3>Clubs & Societies</h3>
+              <p>Coordinate volunteers, budgets, and event promotion.</p>
+            </div>
+            <div class="team-card">
+              <h3>Campus Admin</h3>
+              <p>Track resources, spaces, and scheduling in real time.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span>© 2026 CampusFlow</span>
+        <span>Helping campuses run better events</span>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
