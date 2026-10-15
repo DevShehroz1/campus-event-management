@@ -1,4 +1,4 @@
-const mockEvents = [
+const defaultMockEvents = [
     {
         id: "1",
         title: "Intro to Neural Architecture",
@@ -53,40 +53,116 @@ const mockEvents = [
     }
 ];
 
+function getAllEvents() {
+    let events = JSON.parse(localStorage.getItem('campusEvents'));
+    if (!events) {
+        events = defaultMockEvents;
+        localStorage.setItem('campusEvents', JSON.stringify(events));
+    }
+    return events;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Auto-seed default admin account
+    let accounts = JSON.parse(localStorage.getItem('campusAccounts')) || {};
+    if (!accounts['admin@university.edu']) {
+        accounts['admin@university.edu'] = {
+            name: 'System Administrator',
+            email: 'admin@university.edu',
+            password: 'admin123',
+            studentId: 'ADMIN-001',
+            dept: 'ID: ADMIN-001'
+        };
+        localStorage.setItem('campusAccounts', JSON.stringify(accounts));
+    }
+
+    initDynamicEventDirectory();
     initSearchAndFilter();
     initEventDetailsPage();
     initRegistrationForm();
     initAuthForms();
     initDashboard();
+    initCreateEventForm();
 });
+
+function initDynamicEventDirectory() {
+    const gridContainer = document.getElementById('eventsDirectoryGrid');
+    if (!gridContainer) return;
+
+    const allEvents = getAllEvents();
+    const isAdmin = localStorage.getItem('currentUserEmail') === 'admin@university.edu';
+
+    gridContainer.innerHTML = allEvents.map(event => `
+        <article class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all group">
+            <div class="h-48 overflow-hidden relative">
+                <img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-3 left-3 text-xs font-semibold uppercase tracking-wider text-white bg-orange-600/90 backdrop-blur-md px-3 py-1 rounded-lg shadow">${event.category}</span>
+            </div>
+            <div class="p-6 flex-grow flex flex-col justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 mb-2 font-medium">📅 ${event.date} • ${event.time}</p>
+                    <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors">${event.title}</h3>
+                    <p class="text-slate-400 text-xs mt-2 line-clamp-2">${event.description}</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-orange-400 font-medium">${event.seatsLeft}</span>
+                    <div class="flex items-center gap-3">
+                        ${isAdmin ? `<button onclick="deleteEvent('${event.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">Delete</button>` : ''}
+                        <a href="event-details.html?id=${event.id}" class="bg-slate-800 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
 
 function initSearchAndFilter() {
     const searchInput = document.getElementById('searchEvents');
     const categoryFilter = document.getElementById('categoryFilter');
-    const eventCards = document.querySelectorAll('main article');
-
+    
     if (!searchInput || !categoryFilter) return;
 
     function filterEvents() {
         const query = searchInput.value.toLowerCase().trim();
         const selectedCategory = categoryFilter.value.toLowerCase().trim();
+        const allEvents = getAllEvents();
+        const isAdmin = localStorage.getItem('currentUserEmail') === 'admin@university.edu';
+        const gridContainer = document.getElementById('eventsDirectoryGrid');
+        if (!gridContainer) return;
 
-        eventCards.forEach(card => {
-            const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-            const description = card.querySelector('p')?.textContent.toLowerCase() || '';
-            const badge = card.querySelector('span.uppercase');
-            const category = badge ? badge.textContent.toLowerCase().trim() : '';
-
-            const matchesSearch = title.includes(query) || description.includes(query);
-            const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
-
-            if (matchesSearch && matchesCategory) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
+        const filtered = allEvents.filter(event => {
+            const matchesSearch = event.title.toLowerCase().includes(query) || event.description.toLowerCase().includes(query);
+            const matchesCategory = selectedCategory === 'all' || event.category.toLowerCase() === selectedCategory;
+            return matchesSearch && matchesCategory;
         });
+
+        if (filtered.length === 0) {
+            gridContainer.innerHTML = `<div class="col-span-2 text-center py-12 text-slate-400">No events found matching your criteria.</div>`;
+            return;
+        }
+
+        gridContainer.innerHTML = filtered.map(event => `
+            <article class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all group">
+                <div class="h-48 overflow-hidden relative">
+                    <img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <span class="absolute top-3 left-3 text-xs font-semibold uppercase tracking-wider text-white bg-orange-600/90 backdrop-blur-md px-3 py-1 rounded-lg shadow">${event.category}</span>
+                </div>
+                <div class="p-6 flex-grow flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400 mb-2 font-medium">📅 ${event.date} • ${event.time}</p>
+                        <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors">${event.title}</h3>
+                        <p class="text-slate-400 text-xs mt-2 line-clamp-2">${event.description}</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-orange-400 font-medium">${event.seatsLeft}</span>
+                        <div class="flex items-center gap-3">
+                            ${isAdmin ? `<button onclick="deleteEvent('${event.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">Delete</button>` : ''}
+                            <a href="event-details.html?id=${event.id}" class="bg-slate-800 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `).join('');
     }
 
     searchInput.addEventListener('input', filterEvents);
@@ -99,7 +175,8 @@ function initEventDetailsPage() {
 
     if (!document.getElementById('eventDetailTitle')) return;
 
-    const event = mockEvents.find(e => e.id === eventId) || mockEvents[0];
+    const allEvents = getAllEvents();
+    const event = allEvents.find(e => e.id === eventId) || allEvents[0];
     window.currentActiveEvent = event;
 
     document.getElementById('eventDetailTitle').textContent = event.title;
@@ -115,12 +192,23 @@ function initEventDetailsPage() {
     const regCardContainer = document.getElementById('registrationCardContainer');
     if (regCardContainer) {
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const currentUserEmail = localStorage.getItem('currentUserEmail');
+        const isAdmin = currentUserEmail === 'admin@university.edu';
+
         if (!isLoggedIn) {
             regCardContainer.innerHTML = `
                 <div class="bg-slate-900/80 rounded-2xl border border-orange-500/30 p-6 sticky top-28 shadow-xl text-center">
                     <h3 class="text-xl font-bold text-white mb-2">Authentication Required</h3>
                     <p class="text-slate-400 text-xs mb-6">You must be signed in with your university account to register for events.</p>
                     <a href="login.html" class="inline-block w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-orange-600/30 text-sm">Sign In to Register</a>
+                </div>
+            `;
+        } else if (isAdmin) {
+            regCardContainer.innerHTML = `
+                <div class="bg-slate-900/80 rounded-2xl border border-rose-500/30 p-6 sticky top-28 shadow-xl text-center">
+                    <h3 class="text-xl font-bold text-white mb-2">Admin Control</h3>
+                    <p class="text-slate-400 text-xs mb-6">You are logged in as System Administrator. You can delete this event from the directory or below.</p>
+                    <button onclick="deleteEvent('${event.id}')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-rose-600/30 text-sm">Delete Event</button>
                 </div>
             `;
         }
@@ -143,7 +231,7 @@ function initRegistrationForm() {
             return;
         }
 
-        const eventToRegister = window.currentActiveEvent || mockEvents[0];
+        const eventToRegister = window.currentActiveEvent || getAllEvents()[0];
         const regKey = `myRegistrations_${currentUserEmail}`;
         let myRegistrations = JSON.parse(localStorage.getItem(regKey)) || [];
 
@@ -219,6 +307,72 @@ function initAuthForms() {
     }
 }
 
+function initCreateEventForm() {
+    const form = document.getElementById('createEventForm');
+    if (!form) return;
+
+    const currentUserEmail = localStorage.getItem('currentUserEmail');
+    if (currentUserEmail !== 'admin@university.edu') {
+        alert('⚠️ Access Denied: Only administrators can host new events.');
+        window.location.href = 'dashboard.html';
+        return;
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const newEvent = {
+            id: 'custom-' + Date.now(),
+            title: document.getElementById('eventTitle').value.trim(),
+            category: document.getElementById('eventCategory').value.trim(),
+            date: document.getElementById('eventDate').value.trim(),
+            time: document.getElementById('eventTime').value.trim(),
+            location: document.getElementById('eventLocation').value.trim(),
+            seatsLeft: document.getElementById('eventSeats').value.trim(),
+            organizer: document.getElementById('eventOrganizer').value.trim(),
+            prerequisites: document.getElementById('eventPrereq').value.trim() || 'None',
+            description: document.getElementById('eventDescription').value.trim(),
+            image: document.getElementById('eventImage').value.trim()
+        };
+
+        let events = getAllEvents();
+        events.push(newEvent);
+        localStorage.setItem('campusEvents', JSON.stringify(events));
+
+        alert('🎉 Event published successfully! Redirecting to events directory.');
+        window.location.href = 'events.html';
+    });
+}
+
+// Global Delete Event function for admin (clears event and student registrations)
+window.deleteEvent = function(eventId) {
+    const currentUserEmail = localStorage.getItem('currentUserEmail');
+    if (currentUserEmail !== 'admin@university.edu') {
+        alert('⚠️ Unauthorized: Only the administrator can delete events.');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete this event? This will remove it globally and clear it from student registrations.')) {
+        // 1. Remove from global event directory
+        let events = getAllEvents();
+        events = events.filter(e => e.id !== eventId);
+        localStorage.setItem('campusEvents', JSON.stringify(events));
+
+        // 2. Remove from all student registration lists in localStorage
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('myRegistrations_')) {
+                let regs = JSON.parse(localStorage.getItem(key)) || [];
+                regs = regs.filter(e => e.id !== eventId);
+                localStorage.setItem(key, JSON.stringify(regs));
+            }
+        }
+
+        alert('Event successfully deleted and removed from student dashboards.');
+        window.location.href = 'events.html';
+    }
+};
+
 function initDashboard() {
     const dashboardContainer = document.getElementById('dashboardRegistrations');
     if (!dashboardContainer) return;
@@ -239,7 +393,6 @@ function initDashboard() {
 
     if (nameEl) nameEl.textContent = `Welcome back, ${userName}`;
     
-    // Sanitize userDept to ensure "Computer Science" is stripped out if loaded from older storage
     let rawDept = localStorage.getItem('userDept') || 'ID: 4091';
     rawDept = rawDept.replace('Computer Science • ', '').replace('Computer Science', '').trim();
     if (!rawDept.startsWith('ID:')) rawDept = 'ID: ' + rawDept;
@@ -249,6 +402,15 @@ function initDashboard() {
     if (initialsEl) {
         const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
         initialsEl.textContent = initials || 'US';
+    }
+
+    const hostBtn = document.getElementById('hostEventBtn');
+    if (hostBtn) {
+        if (currentUserEmail === 'admin@university.edu') {
+            hostBtn.classList.remove('hidden');
+        } else {
+            hostBtn.classList.add('hidden');
+        }
     }
 
     const signOutBtn = document.getElementById('signOutBtn');
@@ -273,6 +435,14 @@ function renderRegistrations() {
     const currentUserEmail = localStorage.getItem('currentUserEmail');
     const regKey = `myRegistrations_${currentUserEmail}`;
     let myRegistrations = JSON.parse(localStorage.getItem(regKey)) || [];
+
+    // Defensive check: Filter out any registrations whose events were deleted globally
+    const allEvents = getAllEvents();
+    const validRegistrations = myRegistrations.filter(regEvent => allEvents.some(e => e.id === regEvent.id));
+    if (validRegistrations.length !== myRegistrations.length) {
+        localStorage.setItem(regKey, JSON.stringify(validRegistrations));
+        myRegistrations = validRegistrations;
+    }
 
     if (myRegistrations.length === 0) {
         container.innerHTML = `

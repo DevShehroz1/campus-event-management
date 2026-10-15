@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard — CampusHub</title>
+    <title>Dashboard — CampusHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -19,40 +19,45 @@
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
                 <a href="index.html" class="hover:text-white transition-colors">Overview</a>
                 <a href="events.html" class="hover:text-white transition-colors">Directory</a>
-                <a href="dashboard.html" class="text-orange-500 font-semibold transition-colors">Dashboard</a>
+                <a href="dashboard.html" class="text-orange-500 transition-colors">Dashboard</a>
             </nav>
             <div class="flex items-center gap-3">
-                <a href="#" id="signOutBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition-all">Sign Out</a>
+                <button id="signOutBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition-all">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <!-- Main Dashboard Content -->
+    <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto px-6 py-12 w-full">
         
-        <!-- Welcome Banner -->
-        <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-8 mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <div id="userInitials" class="w-16 h-16 rounded-2xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold text-2xl">
+        <!-- User Profile Banner -->
+        <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-8 mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl">
+            <div class="flex items-center gap-5">
+                <div id="userInitials" class="w-16 h-16 rounded-2xl bg-orange-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-orange-600/30">
                     US
                 </div>
                 <div>
                     <h1 id="userNameDisplay" class="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
-                    <p id="userDeptDisplay" class="text-slate-400 text-sm mt-0.5">Loading profile...</p>
+                    <p id="userDeptDisplay" class="text-slate-400 text-xs mt-1 font-medium">ID: 4091</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="events.html" class="bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-orange-600/30">Browse New Events</a>
+            <div class="flex items-center gap-3 flex-wrap">
+                <!-- Hidden by default, unhidden via JS only for admin -->
+                <a href="create-event.html" id="hostEventBtn" class="hidden bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-orange-600/30">Host New Event</a>
+                <a href="events.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border border-slate-700">Browse Events Directory</a>
             </div>
         </div>
 
-        <!-- Registered Events Section -->
-        <div>
-            <h2 class="text-xl font-bold text-white tracking-tight mb-6">My Event Registrations</h2>
-            <div id="dashboardRegistrations" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Dynamically populated via main.js -->
-            </div>
+        <!-- Registrations Section -->
+        <div class="mb-6">
+            <h2 class="text-xl font-bold text-white tracking-tight">My Event Registrations</h2>
+            <p class="text-slate-400 text-xs mt-0.5">Manage the events you have signed up for</p>
         </div>
+
+        <div id="dashboardRegistrations" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Dynamically rendered registrations will appear here -->
+        </div>
+
     </main>
 
     <!-- Footer -->
