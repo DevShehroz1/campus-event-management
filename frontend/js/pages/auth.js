@@ -9,22 +9,10 @@
         els.tabRegister.setAttribute('aria-selected', isRegister ? 'true' : 'false');
         els.tabLogin.tabIndex = isRegister ? -1 : 0;
         els.tabRegister.tabIndex = isRegister ? 0 : -1;
-        els.tabLogin.className = tabClass(!isRegister);
-        els.tabRegister.className = tabClass(isRegister);
-        els.formLogin.classList.toggle('hidden', isRegister);
-        els.formRegister.classList.toggle('hidden', !isRegister);
-        if (isRegister) {
-            document.getElementById('reg-name').focus();
-        } else {
-            document.getElementById('login-email').focus();
-        }
-    }
-
-    function tabClass(active) {
-        const base = 'flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg transition-all min-h-[44px]';
-        return active
-            ? `${base} text-white bg-orange-600 shadow-lg shadow-orange-600/20`
-            : `${base} text-slate-400 hover:text-white`;
+        els.formLogin.hidden = isRegister;
+        els.formRegister.hidden = !isRegister;
+        if (isRegister) document.getElementById('reg-name').focus();
+        else document.getElementById('login-email').focus();
     }
 
     function safeRedirect() {
@@ -36,8 +24,8 @@
     }
 
     function togglePassword(button) {
-        const targetId = button.getAttribute('data-toggle-password');
-        const input = document.getElementById(targetId);
+        const id = button.getAttribute('data-toggle-password');
+        const input = document.getElementById(id);
         if (!input) return;
         if (input.type === 'password') {
             input.type = 'text';
@@ -50,9 +38,7 @@
         }
     }
 
-    function firstName(name) {
-        return (name || '').trim().split(/\s+/)[0] || '';
-    }
+    function firstName(name) { return (name || '').trim().split(/\s+/)[0] || ''; }
 
     function wireLogin() {
         const schema = {
@@ -65,7 +51,7 @@
             window.validation.showServerError(els.formLogin, '');
             if (!window.validation.validateForm(els.formLogin, schema)) return;
             const btn = document.getElementById('login-submit');
-            window.ui.setButtonLoading(btn, true, 'Signing in...');
+            window.ui.setButtonLoading(btn, true, 'Signing in…');
             try {
                 const payload = {
                     email: document.getElementById('login-email').value.trim(),
@@ -100,7 +86,7 @@
             window.validation.showServerError(els.formRegister, '');
             if (!window.validation.validateForm(els.formRegister, schema)) return;
             const btn = document.getElementById('reg-submit');
-            window.ui.setButtonLoading(btn, true, 'Creating account...');
+            window.ui.setButtonLoading(btn, true, 'Creating account…');
             try {
                 const payload = {
                     name: document.getElementById('reg-name').value.trim(),
@@ -125,16 +111,27 @@
         });
     }
 
+    async function renderAuthStack() {
+        const slot = document.getElementById('auth-stack');
+        if (!slot) return;
+        try {
+            const events = await window.api.getEvents();
+            const picks = events
+                .filter((e) => !window.ui.isPastDate(e.date))
+                .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
+                .slice(0, 2);
+            if (!picks.length) return;
+            slot.innerHTML = picks.map((e) => window.ui.eventCardHTML(e)).join('');
+        } catch (_) {}
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-        if (window.isLoggedIn()) {
-            location.replace('dashboard.html');
-            return;
-        }
+        if (window.isLoggedIn()) { location.replace('dashboard.html'); return; }
         window.ui.cleanupLegacyStorage();
 
-        els.tabLogin = document.getElementById('tab-login');
-        els.tabRegister = document.getElementById('tab-register');
-        els.formLogin = document.getElementById('login-form');
+        els.tabLogin     = document.getElementById('tab-login');
+        els.tabRegister  = document.getElementById('tab-register');
+        els.formLogin    = document.getElementById('login-form');
         els.formRegister = document.getElementById('register-form');
 
         els.tabLogin.addEventListener('click', () => activateTab('login'));
@@ -144,10 +141,10 @@
             btn.addEventListener('click', () => togglePassword(btn));
         });
 
-        const initialTab = window.ui.getParam('mode') === 'register' ? 'register' : 'login';
-        activateTab(initialTab);
+        activateTab(window.ui.getParam('mode') === 'register' ? 'register' : 'login');
 
         wireLogin();
         wireRegister();
+        renderAuthStack();
     });
 })();

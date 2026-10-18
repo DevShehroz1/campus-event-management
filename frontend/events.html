@@ -1,48 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Events — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-stone-50 text-stone-900 font-sans antialiased flex flex-col min-h-screen">
+<body>
 
     <div id="site-header"></div>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 w-full">
+    <main class="wrap">
+        <section class="view" aria-label="Events">
 
-        <div class="mb-10">
-            <p class="text-xs uppercase tracking-widest font-semibold text-orange-600 mb-2">Directory</p>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-stone-900 tracking-tight">Events</h1>
-            <p class="text-stone-600 text-base mt-2 max-w-2xl">Search and filter every event happening on campus — workshops, seminars, competitions, sports, conferences, and student societies.</p>
-        </div>
-
-        <form id="events-filters" class="mb-6 flex flex-col sm:flex-row gap-3 bg-white border border-stone-200 rounded-2xl p-3 elevate-1" role="search" aria-label="Filter events" onsubmit="event.preventDefault();">
-            <div class="flex-1 relative">
-                <label for="events-search" class="sr-only">Search events</label>
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </span>
-                <input id="events-search" type="search" autocomplete="off" placeholder="Search events..."
-                       class="w-full bg-stone-50 border border-stone-200 rounded-xl pl-11 pr-4 py-3 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 min-h-[44px]">
+            <div class="page-title">
+                <span class="eyebrow">Events directory</span>
+                <h1>All campus events</h1>
+                <p>Search by name, place or organiser, or narrow the list by category.</p>
             </div>
-            <label for="events-category" class="sr-only">Filter by category</label>
-            <select id="events-category"
-                    class="w-full sm:w-56 bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 min-h-[44px]">
-                <option value="">All Categories</option>
-            </select>
-            <button id="events-clear" type="button" class="hidden sm:w-auto bg-white border border-stone-200 hover:border-stone-300 text-stone-700 font-medium rounded-xl px-5 py-3 text-sm min-h-[44px]">
-                Clear filters
-            </button>
-        </form>
 
-        <p id="events-count" class="text-sm text-stone-500 mb-5" role="status" aria-live="polite"></p>
+            <div class="stack">
+                <div class="toolbar glass">
+                    <div class="row">
+                        <div class="search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                            <label for="events-search" class="sr-only">Search events</label>
+                            <input id="events-search" type="search" autocomplete="off" placeholder="Search events, e.g. AI workshop">
+                        </div>
+                        <label for="events-category" class="sr-only">Category</label>
+                        <select id="events-category"></select>
+                    </div>
+                    <div class="chips" id="events-chips"></div>
+                </div>
 
-        <div id="events-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div class="result-line">
+                    <span id="events-count"></span>
+                    <button class="btn btn-ghost" id="events-clear" hidden>Clear filters</button>
+                </div>
 
+                <div class="grid" id="events-grid"></div>
+            </div>
+
+        </section>
     </main>
 
     <div id="site-footer"></div>

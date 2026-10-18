@@ -1,69 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusHub — University Events</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>CampusHub — University events</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-stone-50 text-stone-900 font-sans antialiased flex flex-col min-h-screen">
+<body>
 
     <div id="site-header"></div>
 
-    <section class="relative overflow-hidden bg-white border-b border-stone-200">
-        <div class="hero-glow" aria-hidden="true"></div>
-        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-20 sm:pb-28 text-center">
-            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-stone-200 text-stone-700 text-xs font-semibold mb-7 elevate-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-orange-500" aria-hidden="true"></span>
-                <span id="hero-university">University Events Portal</span>
-            </span>
-            <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-stone-900 leading-[1.05] mb-7">
-                Where campus culture <br class="hidden sm:block">
-                <span class="font-serif-italic text-orange-600 text-6xl sm:text-8xl">comes alive.</span>
-            </h1>
-            <p class="text-base sm:text-lg text-stone-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-                Explore curated university seminars, competitive workshops, and student-led activities. Secure your spot in seconds.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
-                <a href="events.html" class="w-full sm:w-auto bg-stone-900 hover:bg-stone-800 text-white px-7 py-3.5 rounded-full font-medium text-sm transition-colors text-center min-h-[48px] inline-flex items-center justify-center elevate-2 focus-ring">
-                    Explore all events
-                    <span class="ml-2" aria-hidden="true">&rarr;</span>
-                </a>
-                <a id="hero-secondary-btn" href="login.html?mode=register" class="w-full sm:w-auto bg-white border border-stone-200 hover:border-stone-300 text-stone-900 px-7 py-3.5 rounded-full font-medium text-sm transition-colors text-center min-h-[48px] inline-flex items-center justify-center elevate-1">Create account</a>
-            </div>
-        </div>
-    </section>
+    <main class="wrap">
+        <section class="view" aria-label="Home">
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 w-full space-y-20">
-
-        <section aria-labelledby="stats-heading">
-            <h2 id="stats-heading" class="sr-only">Campus event statistics</h2>
-            <div id="home-stats" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
-        </section>
-
-        <section aria-labelledby="browse-heading">
-            <div class="mb-6">
-                <p class="text-xs uppercase tracking-widest font-semibold text-orange-600 mb-2">Explore</p>
-                <h2 id="browse-heading" class="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">Browse by category</h2>
-            </div>
-            <div id="home-categories" class="flex flex-wrap gap-3"></div>
-        </section>
-
-        <section aria-labelledby="featured-heading">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
+            <div class="hero">
                 <div>
-                    <p class="text-xs uppercase tracking-widest font-semibold text-orange-600 mb-2">Handpicked</p>
-                    <h2 id="featured-heading" class="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">Featured events</h2>
+                    <div class="live-pill glass"><span class="live-dot" aria-hidden="true"></span>Fall Semester 2026 · registrations open</div>
+                    <h1>Where campus life <span class="grad">comes alive.</span></h1>
+                    <p class="lead" id="home-lead">Seminars, workshops, tournaments and society nights at Riverside University, all in one place. Find something on this week and save your seat in a few clicks.</p>
+                    <div class="cta">
+                        <a class="btn btn-primary" href="events.html">Explore events</a>
+                        <a id="hero-secondary-btn" class="btn btn-glass" href="login.html?mode=register">Create student account</a>
+                    </div>
                 </div>
-                <a href="events.html" class="text-sm font-semibold text-stone-700 hover:text-orange-600 transition-colors inline-flex items-center gap-1">
-                    View all <span aria-hidden="true">&rarr;</span>
-                </a>
+                <div class="hero-stack" id="home-hero-stack" aria-hidden="true"></div>
             </div>
-            <div id="home-featured" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
 
+            <div class="stats glass" id="home-stats"></div>
+
+            <div>
+                <div class="section-head">
+                    <div><span class="eyebrow">Browse by category</span><h2>What are you in the mood for?</h2></div>
+                </div>
+                <div class="chips" id="home-chips"></div>
+            </div>
+
+            <div>
+                <div class="section-head">
+                    <div><span class="eyebrow">Coming up next</span><h2>Featured events</h2></div>
+                    <a class="btn btn-ghost" href="events.html">View all events →</a>
+                </div>
+                <div class="grid" id="home-featured"></div>
+            </div>
+
+        </section>
     </main>
 
     <div id="site-footer"></div>
