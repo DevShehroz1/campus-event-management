@@ -93,7 +93,7 @@ function initDynamicEventDirectory() {
     const isAdmin = localStorage.getItem('currentUserEmail') === 'admin@university.edu';
 
     gridContainer.innerHTML = allEvents.map(event => `
-        <article class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all group">
+        <article onclick="window.location.href='event-details.html?id=${event.id}'" class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all group cursor-pointer shadow-lg">
             <div class="h-48 overflow-hidden relative">
                 <img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 <span class="absolute top-3 left-3 text-xs font-semibold uppercase tracking-wider text-white bg-orange-600/90 backdrop-blur-md px-3 py-1 rounded-lg shadow">${event.category}</span>
@@ -107,8 +107,8 @@ function initDynamicEventDirectory() {
                 <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
                     <span class="text-xs text-orange-400 font-medium">${event.seatsLeft}</span>
                     <div class="flex items-center gap-3">
-                        ${isAdmin ? `<button onclick="deleteEvent('${event.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">Delete</button>` : ''}
-                        <a href="event-details.html?id=${event.id}" class="bg-slate-800 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all">View Details</a>
+                        ${isAdmin ? `<button onclick="event.stopPropagation(); deleteEvent('${event.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">Delete</button>` : ''}
+                        <span class="bg-slate-800 group-hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all">View Details</span>
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@ function initSearchAndFilter() {
         }
 
         gridContainer.innerHTML = filtered.map(event => `
-            <article class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all group">
+            <article onclick="window.location.href='event-details.html?id=${event.id}'" class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between hover:border-slate-700 transition-all group cursor-pointer shadow-lg">
                 <div class="h-48 overflow-hidden relative">
                     <img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     <span class="absolute top-3 left-3 text-xs font-semibold uppercase tracking-wider text-white bg-orange-600/90 backdrop-blur-md px-3 py-1 rounded-lg shadow">${event.category}</span>
@@ -156,8 +156,8 @@ function initSearchAndFilter() {
                     <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
                         <span class="text-xs text-orange-400 font-medium">${event.seatsLeft}</span>
                         <div class="flex items-center gap-3">
-                            ${isAdmin ? `<button onclick="deleteEvent('${event.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">Delete</button>` : ''}
-                            <a href="event-details.html?id=${event.id}" class="bg-slate-800 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all">View Details</a>
+                            ${isAdmin ? `<button onclick="event.stopPropagation(); deleteEvent('${event.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">Delete</button>` : ''}
+                            <span class="bg-slate-800 group-hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all">View Details</span>
                         </div>
                     </div>
                 </div>
