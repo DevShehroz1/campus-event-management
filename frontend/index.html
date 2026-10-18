@@ -8,50 +8,56 @@
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-[#0f172a] text-slate-100 font-sans antialiased flex flex-col min-h-screen selection:bg-orange-500 selection:text-white">
+<body class="bg-stone-50 text-stone-900 font-sans antialiased flex flex-col min-h-screen">
 
     <div id="site-header"></div>
 
-    <section class="relative overflow-hidden pt-16 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 border-b border-slate-800/80 bg-gradient-to-b from-slate-900 via-[#0f172a] to-[#0f172a]">
-        <div class="max-w-4xl mx-auto text-center relative z-10">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-6">
+    <section class="relative overflow-hidden bg-white border-b border-stone-200">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-20 sm:pb-28 text-center">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-stone-200 text-stone-700 text-xs font-semibold mb-7 elevate-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500" aria-hidden="true"></span>
                 <span id="hero-university">University Events Portal</span>
-            </div>
-            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-6">
-                Where campus culture <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 italic font-normal">comes alive.</span>
+            </span>
+            <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-stone-900 leading-[1.05] mb-7">
+                Where campus culture <br class="hidden sm:block">
+                <span class="font-serif-italic text-orange-600 text-6xl sm:text-8xl">comes alive.</span>
             </h1>
-            <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p class="text-base sm:text-lg text-stone-600 max-w-2xl mx-auto mb-10 leading-relaxed">
                 Explore curated university seminars, competitive workshops, and student-led activities. Secure your spot in seconds.
             </p>
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <a href="events.html" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white px-7 py-3.5 rounded-xl font-semibold transition-all shadow-lg shadow-orange-600/30 text-center min-h-[44px] inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-orange-400">Explore All Events</a>
-                <a id="hero-secondary-btn" href="login.html?mode=register" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-7 py-3.5 rounded-xl font-semibold transition-all text-center min-h-[44px] inline-flex items-center justify-center">Create Account</a>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+                <a href="events.html" class="w-full sm:w-auto bg-stone-900 hover:bg-stone-800 text-white px-7 py-3.5 rounded-full font-medium text-sm transition-colors text-center min-h-[48px] inline-flex items-center justify-center elevate-2 focus-ring">
+                    Explore all events
+                    <span class="ml-2" aria-hidden="true">&rarr;</span>
+                </a>
+                <a id="hero-secondary-btn" href="login.html?mode=register" class="w-full sm:w-auto bg-white border border-stone-200 hover:border-stone-300 text-stone-900 px-7 py-3.5 rounded-full font-medium text-sm transition-colors text-center min-h-[48px] inline-flex items-center justify-center elevate-1">Create account</a>
             </div>
         </div>
     </section>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 w-full space-y-20">
 
-        <section class="mb-12" aria-labelledby="stats-heading">
+        <section aria-labelledby="stats-heading">
             <h2 id="stats-heading" class="sr-only">Campus event statistics</h2>
             <div id="home-stats" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
         </section>
 
-        <section class="mb-14" aria-labelledby="browse-heading">
-            <div class="mb-5">
-                <p class="text-xs uppercase tracking-widest font-bold text-orange-500 mb-1">Explore</p>
-                <h2 id="browse-heading" class="text-2xl font-bold tracking-tight text-white">Browse by category</h2>
+        <section aria-labelledby="browse-heading">
+            <div class="mb-6">
+                <p class="text-xs uppercase tracking-widest font-semibold text-orange-600 mb-2">Explore</p>
+                <h2 id="browse-heading" class="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">Browse by category</h2>
             </div>
             <div id="home-categories" class="flex flex-wrap gap-3"></div>
         </section>
 
         <section aria-labelledby="featured-heading">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
                 <div>
-                    <p class="text-xs uppercase tracking-widest font-bold text-orange-500 mb-1">Handpicked</p>
-                    <h2 id="featured-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Featured events</h2>
+                    <p class="text-xs uppercase tracking-widest font-semibold text-orange-600 mb-2">Handpicked</p>
+                    <h2 id="featured-heading" class="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">Featured events</h2>
                 </div>
-                <a href="events.html" class="text-sm font-semibold text-slate-400 hover:text-orange-400 transition-colors inline-flex items-center gap-1">
+                <a href="events.html" class="text-sm font-semibold text-stone-700 hover:text-orange-600 transition-colors inline-flex items-center gap-1">
                     View all <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>

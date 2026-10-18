@@ -1,51 +1,108 @@
-/* Custom Dark Theme Styles */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+
+:root {
+    --surface: #ffffff;
+    --surface-soft: #fafaf9;
+    --surface-mute: #f5f5f4;
+    --ink: #0c0a09;
+    --ink-soft: #44403c;
+    --ink-mute: #78716c;
+    --line: #e7e5e4;
+    --accent: #f97316;
+}
+
+html, body {
+    overflow-x: hidden;
+}
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
+    background: var(--surface-soft);
+    color: var(--ink);
 }
 
-/* Custom Scrollbar for Dark Theme */
-::-webkit-scrollbar {
-    width: 8px;
+.font-serif-italic {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
 }
 
-::-webkit-scrollbar-track {
-    background: #0f172a;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 999px; border: 2px solid var(--surface-soft); }
+::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
 
-::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 4px;
-}
+/* Section surface helpers */
+.surface { background: var(--surface); }
+.surface-soft { background: var(--surface-soft); }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+/* Elevation */
+.elevate-1 { box-shadow: 0 1px 2px rgba(12,10,9,0.04), 0 1px 3px rgba(12,10,9,0.04); }
+.elevate-2 { box-shadow: 0 10px 24px -12px rgba(12,10,9,0.12), 0 2px 6px rgba(12,10,9,0.04); }
+.elevate-3 { box-shadow: 0 24px 48px -16px rgba(12,10,9,0.18), 0 4px 12px rgba(12,10,9,0.06); }
+
+/* Hero decorative blobs */
+.hero-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+.hero-glow::before,
+.hero-glow::after {
+    content: "";
+    position: absolute;
+    width: 480px;
+    height: 480px;
+    border-radius: 999px;
+    filter: blur(80px);
+    opacity: 0.55;
+}
+.hero-glow::before {
+    background: radial-gradient(circle at center, #fed7aa 0%, transparent 70%);
+    top: -120px;
+    left: -120px;
+}
+.hero-glow::after {
+    background: radial-gradient(circle at center, #fde68a 0%, transparent 70%);
+    bottom: -140px;
+    right: -140px;
 }
 
 /* Toast + modal animations */
-@keyframes toastIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-@keyframes toastOut {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-6px); }
-}
+@keyframes toastIn  { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-6px); } }
 .toast-enter { animation: toastIn 180ms ease-out both; }
 .toast-leave { animation: toastOut 180ms ease-in both; }
 
-@keyframes modalIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-@keyframes modalOut {
-    from { opacity: 1; }
-    to   { opacity: 0; }
-}
-.modal-enter { animation: modalIn 150ms ease-out both; }
-.modal-leave { animation: modalOut 150ms ease-in both; }
+@keyframes modalIn  { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+@keyframes modalOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.98); } }
+.modal-enter > div { animation: modalIn 160ms ease-out both; }
+.modal-leave > div { animation: modalOut 140ms ease-in both; }
+.modal-enter { animation: toastIn 160ms ease-out both; }
+.modal-leave { animation: toastOut 140ms ease-in both; }
 
-/* Prevent horizontal overflow on narrow screens */
-html, body { overflow-x: hidden; }
+/* Skeleton shimmer */
+@keyframes shimmer { from { background-position: -200px 0; } to { background-position: calc(200px + 100%) 0; } }
+.skeleton {
+    background-color: #f1f5f9;
+    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+    background-size: 200px 100%;
+    background-repeat: no-repeat;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* Selection */
+::selection { background: #fdba74; color: #0c0a09; }
+
+/* Focus ring consistency */
+.focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.35);
+}
