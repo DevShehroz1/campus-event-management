@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events Directory — CampusHub</title>
+    <title>Events — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="stylesheet" href="css/style.css">
@@ -12,39 +12,37 @@
 
     <div id="site-header"></div>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-6 py-12 w-full">
-        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold text-white tracking-tight">Events Directory</h1>
-                <p class="text-slate-400 text-sm mt-1">Explore and filter all active campus seminars, workshops, and activities.</p>
-            </div>
-            
-            <!-- Search & Filter Controls -->
-            <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="searchEvents" placeholder="Search events..." class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors w-full sm:w-64">
-                <select id="categoryFilter" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-orange-500 transition-colors">
-                    <option value="all">All Categories</option>
-                    <option value="workshop">Workshop</option>
-                    <option value="seminar">Seminar</option>
-                    <option value="competition">Competition</option>
-                    <option value="sports">Sports Event</option>
-                    <option value="conference">Conference</option>
-                    <option value="society">Student Society Activity</option>
-                </select>
-            </div>
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12 w-full">
+
+        <div class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Events</h1>
+            <p class="text-slate-400 text-sm mt-1">Search and filter every event happening on campus.</p>
         </div>
 
-        <!-- Dynamic Events Grid Container -->
-        <div id="eventsDirectoryGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Events rendered dynamically via JavaScript -->
-        </div>
+        <form id="events-filters" class="mb-6 flex flex-col sm:flex-row gap-3" role="search" aria-label="Filter events" onsubmit="event.preventDefault();">
+            <label for="events-search" class="sr-only">Search events</label>
+            <input id="events-search" type="search" autocomplete="off" placeholder="Search events..."
+                   class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 min-h-[44px]">
+            <label for="events-category" class="sr-only">Filter by category</label>
+            <select id="events-category"
+                    class="w-full sm:w-56 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 min-h-[44px]">
+                <option value="">All Categories</option>
+            </select>
+            <button id="events-clear" type="button" class="hidden sm:w-auto bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold rounded-xl px-5 py-3 text-sm min-h-[44px]">
+                Clear filters
+            </button>
+        </form>
+
+        <p id="events-count" class="text-sm text-slate-400 mb-4" role="status" aria-live="polite"></p>
+
+        <div id="events-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
     </main>
 
     <div id="site-footer"></div>
 
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/pages/events.js"></script>
 </body>
 </html>
