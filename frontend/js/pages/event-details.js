@@ -1,23 +1,18 @@
 (function () {
     'use strict';
 
+    const page = {};
     let currentEvent = null;
     let registered = false;
     let adminRegCount = 0;
 
-    const page = {};
-
-    function categoryColor(cat) {
-        return window.ui.CATEGORY_COLORS[(cat || '').toLowerCase()] || 'stone';
-    }
-
     function showNotFound() {
         page.content.innerHTML = `
-            <div class="max-w-xl mx-auto text-center py-20">
-                <div class="text-5xl mb-4" aria-hidden="true">🧭</div>
-                <h1 class="text-3xl font-extrabold text-stone-900 tracking-tight mb-2">Event not found</h1>
-                <p class="text-stone-500 mb-8">We couldn't find the event you're looking for. It may have been removed.</p>
-                <a href="events.html" class="inline-flex items-center justify-center bg-stone-900 hover:bg-stone-800 text-white font-medium rounded-full px-5 py-2.5 text-sm min-h-[44px] elevate-1">Back to events</a>
+            <div class="detail-notfound">
+                <div class="ring glass" style="width:72px;height:72px;display:grid;place-items:center;border-radius:50%;font-size:1.8rem">🧭</div>
+                <h1 style="font-size:2.2rem">Event not found</h1>
+                <p class="muted">We couldn't find the event you're looking for. It may have been removed.</p>
+                <a class="btn btn-primary" href="events.html">Back to events</a>
             </div>
         `;
     }
@@ -30,122 +25,78 @@
 
     function renderEvent(event) {
         document.title = `${event.title} — CampusHub`;
-        const color = categoryColor(event.category);
-        const img = event.image
-            ? `<img src="${window.ui.escapeHtml(event.image)}" alt="${window.ui.escapeHtml(event.title)}" class="w-full h-full object-cover" onerror="this.outerHTML='<div class=\\'w-full h-full bg-gradient-to-br from-${color}-100 via-stone-50 to-white\\'></div>'">`
-            : `<div class="w-full h-full bg-gradient-to-br from-${color}-100 via-stone-50 to-white"></div>`;
-
-        const capacity = Number(event.capacity);
-        const seatsLeft = Number(event.seatsLeft);
-        const seatsText = Number.isFinite(seatsLeft) && Number.isFinite(capacity)
-            ? `${seatsLeft} of ${capacity} seats left`
-            : (Number.isFinite(seatsLeft) ? `${seatsLeft} seats left` : '—');
-        const seatsPct = (Number.isFinite(seatsLeft) && Number.isFinite(capacity) && capacity > 0)
-            ? Math.round(((capacity - seatsLeft) / capacity) * 100)
-            : 0;
-
+        const bannerImg = event.image
+            ? `<img src="${window.ui.escapeHtml(event.image)}" alt="${window.ui.escapeHtml(event.title)}" onerror="this.remove()">`
+            : '<div class="ticket-art"></div>';
         page.content.innerHTML = `
-            <div class="mb-6">
-                <a href="events.html" class="text-sm font-medium text-stone-600 hover:text-stone-900 inline-flex items-center gap-1">
-                    <span aria-hidden="true">&larr;</span> Back to events
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                <div class="lg:col-span-2 space-y-8">
-                    <div class="rounded-3xl overflow-hidden border border-stone-200 bg-white h-64 sm:h-80 relative elevate-1">
-                        ${img}
+            <div class="detail">
+                <div style="display:grid;gap:24px;min-width:0">
+                    <div class="banner glass" data-cat="${window.ui.escapeHtml((event.category || '').toLowerCase())}">
+                        ${bannerImg}
+                        ${window.ui.categoryBadge(event.category)}
                     </div>
-
                     <div>
-                        <div class="flex items-center flex-wrap gap-3 mb-4">
-                            ${window.ui.categoryBadge(event.category)}
-                            <span class="text-xs text-stone-500">${window.ui.escapeHtml(window.ui.formatDate(event.date))}${event.time ? ' · ' + window.ui.escapeHtml(event.time) : ''}</span>
-                        </div>
-                        <h1 class="text-3xl sm:text-5xl font-extrabold text-stone-900 tracking-tight mb-5 leading-[1.1]">${window.ui.escapeHtml(event.title)}</h1>
-                        <p class="text-stone-700 leading-relaxed text-base mb-8 whitespace-pre-line">${window.ui.escapeHtml(event.description || '')}</p>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white p-6 rounded-3xl border border-stone-200 elevate-1">
-                            ${infoRow('Location', event.location)}
-                            ${infoRow('Date', window.ui.formatDate(event.date))}
-                            ${infoRow('Time', event.time || '—')}
-                            ${seatsBlock(seatsText, seatsPct)}
-                            ${infoRow('Organizer', event.organizer)}
-                            ${infoRow('Prerequisites', event.prerequisites || 'None')}
-                        </div>
+                        <p class="mono faint" style="font-size:.85rem">${window.ui.escapeHtml(window.ui.formatDate(event.date))}${event.time ? ' · ' + window.ui.escapeHtml(event.time) : ''}</p>
+                        <h1 style="font-size:clamp(1.9rem,4vw,2.8rem);margin-top:8px">${window.ui.escapeHtml(event.title)}</h1>
+                        <p class="muted" style="margin-top:14px;max-width:65ch;font-size:1.02rem;white-space:pre-line">${window.ui.escapeHtml(event.description || '')}</p>
+                    </div>
+                    <div class="facts glass">
+                        ${fact('Date', window.ui.formatDate(event.date))}
+                        ${fact('Time', event.time || '—')}
+                        ${fact('Location', event.location || '—')}
+                        ${fact('Category', window.ui.categoryLabel(event.category))}
+                        ${fact('Organizer', event.organizer || '—')}
+                        ${fact('Prerequisites', event.prerequisites || 'None')}
                     </div>
                 </div>
-
-                <aside class="lg:col-span-1">
-                    <div id="registration-card" class="lg:sticky lg:top-24"></div>
-                </aside>
+                <aside class="reg-card glass" data-cat="${window.ui.escapeHtml((event.category || '').toLowerCase())}" id="registration-card"></aside>
             </div>
         `;
+        renderRegistrationCard();
     }
 
-    function infoRow(label, value) {
-        return `
-            <div>
-                <span class="text-[11px] text-stone-500 block mb-1 font-semibold uppercase tracking-wider">${window.ui.escapeHtml(label)}</span>
-                <span class="text-stone-900 font-semibold text-sm block">${window.ui.escapeHtml(value || '—')}</span>
-            </div>
-        `;
+    function fact(label, value) {
+        return `<div class="fact"><span class="label">${window.ui.escapeHtml(label)}</span><b>${window.ui.escapeHtml(value || '—')}</b></div>`;
     }
 
-    function seatsBlock(text, pct) {
-        return `
-            <div class="sm:col-span-2">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-[11px] text-stone-500 font-semibold uppercase tracking-wider">Available seats</span>
-                    <span class="text-stone-900 font-semibold text-sm">${window.ui.escapeHtml(text)}</span>
-                </div>
-                <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-all" style="width: ${pct}%"></div>
-                </div>
-            </div>
-        `;
-    }
-
-    function registrationCard() {
+    function renderRegistrationCard() {
         const slot = document.getElementById('registration-card');
         if (!slot) return;
         const event = currentEvent;
         const past = window.ui.isPastDate(event.date);
         const full = Number(event.seatsLeft) === 0;
 
+        const seatsHeader = `
+            <div>
+                <span class="eyebrow">Available seats</span>
+                <div class="big-seats" style="margin-top:6px"><b class="mono">${Number.isFinite(Number(event.seatsLeft)) ? event.seatsLeft : '—'}</b><span class="faint">of ${Number.isFinite(Number(event.capacity)) ? event.capacity : '—'}</span></div>
+            </div>
+            ${window.ui.seatsSection(event)}
+        `;
+
         if (!window.isLoggedIn()) {
             slot.innerHTML = `
-                <div class="bg-white border border-stone-200 rounded-3xl p-6 elevate-2">
-                    <h2 class="text-lg font-bold text-stone-900 mb-1">Sign in to register</h2>
-                    <p class="text-sm text-stone-500 mb-5 leading-relaxed">Students need to be signed in to reserve a seat.</p>
-                    <a href="login.html?redirect=${encodeURIComponent('event-details.html?id=' + event.id)}"
-                       class="w-full inline-flex items-center justify-center bg-stone-900 hover:bg-stone-800 text-white font-medium rounded-full px-5 py-3 text-sm min-h-[44px] elevate-1 focus-ring">Sign in to register</a>
-                </div>
+                ${seatsHeader}
+                <p class="faint" style="font-size:.88rem">Sign in with your university account to reserve a seat.</p>
+                <a class="btn btn-primary btn-block" href="login.html?redirect=${encodeURIComponent('event-details.html?id=' + event.id)}">Sign in to register</a>
             `;
             return;
         }
 
         if (window.isAdmin()) {
             slot.innerHTML = `
-                <div class="bg-white border border-stone-200 rounded-3xl p-6 elevate-2 space-y-5">
-                    <div>
-                        <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-700 border border-orange-100 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2">Admin</span>
-                        <h2 class="text-lg font-bold text-stone-900">Manage event</h2>
-                    </div>
-                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4">
-                        <p class="text-[11px] uppercase tracking-wider text-stone-500 font-semibold mb-1">Registered students</p>
-                        <p class="text-3xl font-extrabold text-stone-900">${adminRegCount}</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <a href="create-event.html?id=${encodeURIComponent(event.id)}"
-                           class="w-full inline-flex items-center justify-center bg-stone-900 hover:bg-stone-800 text-white font-medium rounded-full px-5 py-3 text-sm min-h-[44px] elevate-1">Edit event</a>
-                        <button type="button" data-admin-delete
-                                class="w-full inline-flex items-center justify-center bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-full px-5 py-3 text-sm min-h-[44px] elevate-1">Delete event</button>
-                    </div>
+                ${seatsHeader}
+                <div style="display:grid;gap:4px">
+                    <span class="eyebrow">Admin</span>
+                    <p class="mono" style="font-size:1.8rem;font-weight:700;color:var(--ink);line-height:1">${adminRegCount}</p>
+                    <p class="faint" style="font-size:.82rem">students registered</p>
+                </div>
+                <div style="display:grid;gap:8px">
+                    <a class="btn btn-primary btn-block" href="create-event.html?id=${encodeURIComponent(event.id)}">Edit event</a>
+                    <button type="button" class="btn btn-danger btn-block" data-admin-delete>Delete event</button>
                 </div>
             `;
-            const del = slot.querySelector('[data-admin-delete]');
-            if (del) del.addEventListener('click', () => {
+            slot.querySelector('[data-admin-delete]').addEventListener('click', () => {
                 window.ui.confirmAndDeleteEvent(event, () => {
                     window.ui.setFlash(`Deleted "${event.title}"`, 'success');
                     location.href = 'events.html';
@@ -156,104 +107,70 @@
 
         if (past) {
             slot.innerHTML = `
-                <div class="bg-white border border-stone-200 rounded-3xl p-6 elevate-1 text-center">
-                    <div class="text-3xl mb-2" aria-hidden="true">🏁</div>
-                    <h2 class="text-lg font-bold text-stone-900 mb-1">This event has ended</h2>
-                    <p class="text-sm text-stone-500 mb-5">Registrations are closed.</p>
-                    <button type="button" disabled class="w-full inline-flex items-center justify-center bg-stone-100 border border-stone-200 text-stone-400 font-medium rounded-full px-5 py-3 text-sm min-h-[44px] cursor-not-allowed">Registration closed</button>
-                </div>
+                ${seatsHeader}
+                <p class="faint" style="font-size:.88rem">This event has ended. Registrations are closed.</p>
+                <button type="button" class="btn btn-glass btn-block" disabled>Event ended</button>
             `;
             return;
         }
 
         if (registered) {
             slot.innerHTML = `
-                <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 elevate-1">
-                    <div class="flex items-start gap-3 mb-4">
-                        <span class="inline-flex w-8 h-8 rounded-full bg-emerald-500 text-white items-center justify-center font-bold" aria-hidden="true">&check;</span>
-                        <div>
-                            <h2 class="text-lg font-bold text-stone-900">You're registered</h2>
-                            <p class="text-sm text-emerald-800">We've saved your spot for ${window.ui.escapeHtml(event.title)}.</p>
-                        </div>
-                    </div>
-                    <button type="button" data-cancel-reg class="w-full inline-flex items-center justify-center bg-white border border-stone-200 hover:border-rose-300 hover:text-rose-600 text-stone-700 font-medium rounded-full px-5 py-3 text-sm min-h-[44px]">Cancel registration</button>
-                </div>
+                ${seatsHeader}
+                <div class="registered"><span aria-hidden="true">✓</span><span>You're registered for this event</span></div>
+                <p class="faint" style="font-size:.88rem">We'll keep your seat. If plans change, cancel so someone else can go.</p>
+                <button type="button" class="btn btn-danger btn-block" data-cancel-reg>Cancel registration</button>
             `;
-            const cancel = slot.querySelector('[data-cancel-reg]');
-            if (cancel) cancel.addEventListener('click', onCancel);
+            slot.querySelector('[data-cancel-reg]').addEventListener('click', onCancel);
             return;
         }
 
         if (full) {
             slot.innerHTML = `
-                <div class="bg-white border border-rose-200 rounded-3xl p-6 elevate-1 text-center">
-                    <div class="text-3xl mb-2" aria-hidden="true">🚫</div>
-                    <h2 class="text-lg font-bold text-stone-900 mb-1">Event is full</h2>
-                    <p class="text-sm text-rose-700 mb-5">All seats have been taken. Check back later in case someone cancels.</p>
-                    <button type="button" disabled class="w-full inline-flex items-center justify-center bg-stone-100 border border-stone-200 text-stone-400 font-medium rounded-full px-5 py-3 text-sm min-h-[44px] cursor-not-allowed">Full</button>
-                </div>
+                ${seatsHeader}
+                <button type="button" class="btn btn-glass btn-block" disabled>Event is full</button>
+                <p class="faint" style="font-size:.88rem">All ${event.capacity} seats are taken. Check back in case someone cancels.</p>
             `;
             return;
         }
 
         const user = window.getCurrentUser() || {};
         slot.innerHTML = `
-            <form id="registration-form" class="bg-white border border-stone-200 rounded-3xl p-6 elevate-2 space-y-4" novalidate>
-                <div>
-                    <h2 class="text-lg font-bold text-stone-900">Reserve your seat</h2>
-                    <p class="text-sm text-stone-500">Confirm your details below.</p>
-                </div>
-                <div id="form-server-error" class="hidden bg-rose-50 border border-rose-200 text-rose-800 text-sm rounded-xl px-4 py-3"></div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-stone-600 mb-1.5 uppercase tracking-wider" for="reg-name">Full name</label>
-                    <input id="reg-name" type="text" readonly value="${window.ui.escapeHtml(user.name || '')}"
-                           class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-800 cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-stone-600 mb-1.5 uppercase tracking-wider" for="reg-email">University email</label>
-                    <input id="reg-email" type="email" readonly value="${window.ui.escapeHtml(user.email || '')}"
-                           class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-800 cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-stone-600 mb-1.5 uppercase tracking-wider" for="reg-studentid">Student ID</label>
-                    <input id="reg-studentid" type="text" readonly value="${window.ui.escapeHtml(user.studentId || '')}"
-                           class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-800 cursor-not-allowed">
-                </div>
-                <label class="flex items-start gap-3 text-sm text-stone-700">
-                    <input id="reg-agree" type="checkbox" required class="mt-0.5 w-5 h-5 accent-orange-500">
-                    <span>I will attend and agree to the event rules.</span>
-                </label>
-                <p id="reg-agree-error" class="hidden text-rose-600 text-xs"></p>
-                <button id="reg-submit" type="submit"
-                        class="w-full inline-flex items-center justify-center bg-stone-900 hover:bg-stone-800 text-white font-medium rounded-full px-5 py-3 text-sm min-h-[44px] elevate-1 focus-ring disabled:opacity-60 disabled:cursor-not-allowed">Confirm registration</button>
+            ${seatsHeader}
+            <form class="form" id="registration-form" novalidate>
+                <div class="server-error" id="reg-server-error" hidden></div>
+                <div class="field"><label for="reg-name">Full name</label><input id="reg-name" value="${window.ui.escapeHtml(user.name || '')}" readonly></div>
+                <div class="field"><label for="reg-email">University email</label><input id="reg-email" value="${window.ui.escapeHtml(user.email || '')}" readonly></div>
+                <div class="field"><label for="reg-studentid">Student ID</label><input id="reg-studentid" value="${window.ui.escapeHtml(user.studentId || '')}" readonly></div>
+                <label class="check"><input type="checkbox" id="reg-agree"> I will attend and agree to the event rules</label>
+                <span class="error" id="reg-agree-error" hidden>Please confirm you will attend.</span>
+                <button class="btn btn-primary btn-block" id="reg-submit" type="submit">Confirm registration</button>
             </form>
         `;
-
-        document.getElementById('registration-form').addEventListener('submit', onSubmit);
+        slot.querySelector('#registration-form').addEventListener('submit', onSubmit);
     }
 
     async function onSubmit(e) {
         e.preventDefault();
+        const err = document.getElementById('reg-server-error');
         const agree = document.getElementById('reg-agree');
-        const agreeError = document.getElementById('reg-agree-error');
-        const serverError = document.getElementById('form-server-error');
-        serverError.classList.add('hidden');
+        const agreeErr = document.getElementById('reg-agree-error');
+        err.hidden = true;
         if (!agree.checked) {
-            agreeError.textContent = 'Please confirm you will attend before registering.';
-            agreeError.classList.remove('hidden');
+            agreeErr.hidden = false;
             agree.focus();
             return;
         }
-        agreeError.classList.add('hidden');
+        agreeErr.hidden = true;
         const btn = document.getElementById('reg-submit');
-        window.ui.setButtonLoading(btn, true, 'Registering...');
+        window.ui.setButtonLoading(btn, true, 'Registering…');
         try {
             await window.api.registerForEvent(currentEvent.id);
-            window.ui.showToast(`You're registered for ${currentEvent.title}!`, 'success');
-            await reloadEvent();
-        } catch (err) {
-            serverError.textContent = err.message || 'Could not register for this event.';
-            serverError.classList.remove('hidden');
+            window.ui.showToast(`You're registered for ${currentEvent.title}.`, 'success');
+            await reload();
+        } catch (ex) {
+            err.textContent = ex.message || 'Could not register for this event.';
+            err.hidden = false;
             window.ui.setButtonLoading(btn, false);
         }
     }
@@ -261,68 +178,49 @@
     async function onCancel() {
         const ok = await window.ui.showConfirm({
             title: 'Cancel registration?',
-            message: `You'll lose your seat for "${currentEvent.title}".`,
+            message: `Your seat at "${currentEvent.title}" will be released for another student.`,
             confirmText: 'Cancel registration',
+            cancelText: 'Keep my seat',
             danger: true
         });
         if (!ok) return;
         try {
             await window.api.cancelRegistration(currentEvent.id);
-            window.ui.showToast('Registration cancelled', 'info');
-            await reloadEvent();
+            window.ui.showToast('Registration cancelled.', 'info');
+            await reload();
         } catch (err) {
             window.ui.showToast(err.message || 'Could not cancel registration', 'error');
         }
     }
 
-    async function detectRegistrationState(event) {
-        if (!window.isLoggedIn()) {
-            registered = false;
-            adminRegCount = 0;
-            return;
-        }
+    async function detectState(event) {
+        if (!window.isLoggedIn()) { registered = false; adminRegCount = 0; return; }
         try {
             const regs = await window.api.getRegistrations();
             const matches = (regs || []).filter((r) => r && r.event && String(r.event.id) === String(event.id));
-            if (window.isAdmin()) {
-                adminRegCount = matches.length;
-                registered = false;
-            } else {
-                registered = matches.length > 0;
-                adminRegCount = 0;
-            }
-        } catch (_) {
-            registered = false;
-            adminRegCount = 0;
-        }
+            if (window.isAdmin()) { adminRegCount = matches.length; registered = false; }
+            else { registered = matches.length > 0; adminRegCount = 0; }
+        } catch (_) { registered = false; adminRegCount = 0; }
     }
 
-    async function reloadEvent() {
+    async function reload() {
         const event = await window.api.getEvent(currentEvent.id);
         currentEvent = event;
-        await detectRegistrationState(event);
+        await detectState(event);
         renderEvent(event);
-        registrationCard();
     }
 
     async function load() {
         const id = window.ui.getParam('id');
-        if (!id || /^\s*$/.test(id)) {
-            showNotFound();
-            return;
-        }
-        page.content.innerHTML = window.ui.skeletonCards(1);
+        if (!id || /^\s*$/.test(id)) { showNotFound(); return; }
+        page.content.innerHTML = `<div class="skel-grid">${window.ui.skeletonCards(1)}</div>`;
         try {
             const event = await window.api.getEvent(id);
             currentEvent = event;
-            await detectRegistrationState(event);
+            await detectState(event);
             renderEvent(event);
-            registrationCard();
         } catch (err) {
-            if (err.status === 404 || err.status === 400) {
-                showNotFound();
-                return;
-            }
+            if (err.status === 404 || err.status === 400) { showNotFound(); return; }
             showError(err.message);
         }
     }

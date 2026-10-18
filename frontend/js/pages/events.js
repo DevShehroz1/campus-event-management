@@ -1,71 +1,78 @@
 (function () {
     'use strict';
 
-    const CATEGORIES = ['workshop','seminar','competition','sports','conference','society'];
-
+    const CATS = window.ui.CATEGORY_KEYS;
+    const LABELS = window.ui.CATEGORY_LABELS;
     const els = {};
-    let requestSeq = 0;
+    let seq = 0;
 
     function syncUrl(search, category) {
         const params = new URLSearchParams();
         if (search) params.set('search', search);
         if (category) params.set('category', category);
         const qs = params.toString();
-        const target = qs ? `?${qs}` : location.pathname.split('/').pop();
         history.replaceState(null, '', qs ? `?${qs}` : location.pathname.split('/').pop());
     }
 
-    function updateClearButton() {
-        if (!els.clearBtn) return;
-        const hasFilter = (els.search.value && els.search.value.trim()) || (els.category.value && els.category.value !== '');
-        els.clearBtn.classList.toggle('hidden', !hasFilter);
+    function renderOptions() {
+        els.category.innerHTML = '<option value="">All categories</option>'
+            + CATS.map((k) => `<option value="${k}">${LABELS[k]}</option>`).join('');
     }
 
-    function renderCount(total, search) {
-        if (!els.count) return;
+    function renderChips() {
+        els.chips.innerHTML = CATS.map((k) => `
+            <button type="button" class="chip" data-filter="${k}" aria-pressed="false"><i></i>${LABELS[k]}</button>
+        `).join('');
+    }
+
+    function updateChips() {
+        const current = els.category.value;
+        els.chips.querySelectorAll('[data-filter]').forEach((c) => {
+            c.setAttribute('aria-pressed', String(c.getAttribute('data-filter') === current));
+        });
+    }
+
+    function updateClear() {
+        const has = (els.search.value && els.search.value.trim()) || els.category.value;
+        els.clearBtn.hidden = !has;
+    }
+
+    function renderCount(total, search, category) {
         const noun = total === 1 ? 'event' : 'events';
-        const suffix = search ? ` for "${window.ui.escapeHtml(search)}"` : '';
-        els.count.innerHTML = `Showing <span class="text-white font-semibold">${total}</span> ${noun}${suffix}`;
+        const parts = [`Showing ${total} ${noun}`];
+        if (search) parts.push(`for "${window.ui.escapeHtml(search)}"`);
+        if (category) parts.push(`in ${LABELS[category]}`);
+        els.count.textContent = parts.join(' ');
     }
 
     function renderResults(events) {
-        if (!els.grid) return;
-        const sorted = events.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
         const admin = window.isAdmin();
+        const sorted = events.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
         els.grid.innerHTML = sorted.map((e) => window.ui.eventCardHTML(e, { showAdminActions: admin })).join('');
-        wireAdminDelete();
-    }
-
-    function wireAdminDelete() {
         els.grid.querySelectorAll('[data-delete-event]').forEach((btn) => {
             btn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 const id = decodeURIComponent(btn.getAttribute('data-delete-event'));
-                const card = btn.closest('article');
-                const title = card ? (card.querySelector('h3 a')?.textContent || 'this event') : 'this event';
-                await window.ui.confirmAndDeleteEvent({ id, title }, () => {
-                    load();
-                });
+                const title = btn.closest('article')?.querySelector('h3 a')?.textContent || 'this event';
+                await window.ui.confirmAndDeleteEvent({ id, title }, load);
             });
         });
     }
 
     function showEmpty() {
-        if (!els.grid) return;
         els.grid.innerHTML = window.ui.emptyStateHTML({
-            icon: '🔍',
+            icon: '⌕',
             title: 'No events match your search',
-            text: 'Try different keywords, pick another category, or clear your filters.',
-            actionHTML: `<button type="button" data-clear class="inline-flex items-center justify-center bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl shadow-lg shadow-orange-600/30 px-5 py-2.5 text-sm min-h-[44px]">Clear filters</button>`
+            text: 'Try a different word or clear the category filter.',
+            actionHTML: `<button type="button" class="btn btn-glass" data-clear>Clear filters</button>`
         });
-        const clear = els.grid.querySelector('[data-clear]');
-        if (clear) clear.addEventListener('click', clearFilters);
+        const clr = els.grid.querySelector('[data-clear]');
+        if (clr) clr.addEventListener('click', clearFilters);
     }
 
-    function showError(message) {
-        if (!els.grid) return;
-        els.grid.innerHTML = window.ui.errorStateHTML(message);
+    function showError(msg) {
+        els.grid.innerHTML = window.ui.errorStateHTML(msg);
         const retry = els.grid.querySelector('[data-retry]');
         if (retry) retry.addEventListener('click', load);
     }
@@ -73,64 +80,62 @@
     function clearFilters() {
         els.search.value = '';
         els.category.value = '';
-        updateClearButton();
         syncUrl('', '');
+        updateClear();
+        updateChips();
         load();
     }
 
     async function load() {
-        if (!els.grid) return;
         const search = els.search.value.trim();
         const category = els.category.value;
         syncUrl(search, category);
-        updateClearButton();
+        updateClear();
+        updateChips();
         els.grid.innerHTML = window.ui.skeletonCards(6);
-        if (els.count) els.count.textContent = '';
-        const seq = ++requestSeq;
+        els.count.textContent = '';
+        const mySeq = ++seq;
         try {
             const events = await window.api.getEvents(search, category);
-            if (seq !== requestSeq) return;
-            renderCount(events.length, search);
-            if (events.length === 0) {
-                showEmpty();
-                return;
-            }
+            if (mySeq !== seq) return;
+            renderCount(events.length, search, category);
+            if (!events.length) { showEmpty(); return; }
             renderResults(events);
         } catch (err) {
-            if (seq !== requestSeq) return;
+            if (mySeq !== seq) return;
             showError(err.message);
         }
     }
 
-    function initCategoryOptions() {
-        if (!els.category) return;
-        const options = ['<option value="">All Categories</option>']
-            .concat(CATEGORIES.map((c) => `<option value="${c}">${c.charAt(0).toUpperCase() + c.slice(1)}</option>`));
-        els.category.innerHTML = options.join('');
-    }
-
     function initFromUrl() {
-        const search = window.ui.getParam('search') || '';
-        const category = window.ui.getParam('category') || '';
-        els.search.value = search;
-        if (CATEGORIES.includes(category)) els.category.value = category;
+        els.search.value = window.ui.getParam('search') || '';
+        const cat = window.ui.getParam('category') || '';
+        if (CATS.includes(cat)) els.category.value = cat;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         els.search   = document.getElementById('events-search');
         els.category = document.getElementById('events-category');
-        els.clearBtn = document.getElementById('events-clear');
-        els.grid     = document.getElementById('events-grid');
+        els.chips    = document.getElementById('events-chips');
         els.count    = document.getElementById('events-count');
+        els.grid     = document.getElementById('events-grid');
+        els.clearBtn = document.getElementById('events-clear');
 
-        initCategoryOptions();
+        renderOptions();
+        renderChips();
         initFromUrl();
-        updateClearButton();
 
-        const debouncedLoad = window.ui.debounce(load, 300);
+        const debouncedLoad = window.ui.debounce(load, 250);
         els.search.addEventListener('input', debouncedLoad);
         els.category.addEventListener('change', load);
-        if (els.clearBtn) els.clearBtn.addEventListener('click', clearFilters);
+        els.clearBtn.addEventListener('click', clearFilters);
+        els.chips.addEventListener('click', (e) => {
+            const chip = e.target.closest('[data-filter]');
+            if (!chip) return;
+            const next = chip.getAttribute('data-filter');
+            els.category.value = els.category.value === next ? '' : next;
+            load();
+        });
 
         load();
     });

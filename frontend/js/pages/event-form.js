@@ -1,53 +1,44 @@
 (function () {
     'use strict';
 
-    const CATEGORIES = ['workshop','seminar','competition','sports','conference','society'];
-    const CAT_LABELS = {
-        workshop: 'Workshop', seminar: 'Seminar', competition: 'Competition',
-        sports: 'Sports', conference: 'Conference', society: 'Student Society Activity'
-    };
+    const CATS = window.ui.CATEGORY_KEYS;
+    const LABELS = window.ui.CATEGORY_LABELS;
 
     const els = {};
     let editingId = null;
     const schema = {
-        'event-title':        [window.validation.required('Title')],
-        'event-category':     [window.validation.required('Category'), window.validation.oneOf(CATEGORIES, 'Category')],
-        'event-date':         [window.validation.required('Date'), window.validation.notPastDate()],
-        'event-time':         [window.validation.required('Time')],
-        'event-location':     [window.validation.required('Location')],
-        'event-capacity':     [window.validation.required('Capacity'), window.validation.positiveInteger('Capacity')],
-        'event-organizer':    [window.validation.required('Organizer')],
-        'event-image':        [window.validation.required('Image URL'), window.validation.url()],
-        'event-description':  [window.validation.required('Description'), window.validation.minLength(20, 'Description')]
+        'event-title':       [window.validation.required('Title')],
+        'event-category':    [window.validation.required('Category'), window.validation.oneOf(CATS, 'Category')],
+        'event-date':        [window.validation.required('Date'), window.validation.notPastDate()],
+        'event-time':        [window.validation.required('Time')],
+        'event-location':    [window.validation.required('Location')],
+        'event-capacity':    [window.validation.required('Capacity'), window.validation.positiveInteger('Capacity')],
+        'event-organizer':   [window.validation.required('Organizer')],
+        'event-image':       [window.validation.required('Image URL'), window.validation.url()],
+        'event-description': [window.validation.required('Description'), window.validation.minLength(20, 'Description')]
     };
 
     function renderCategoryOptions() {
         els.category.innerHTML = ['<option value="">Choose a category…</option>']
-            .concat(CATEGORIES.map((c) => `<option value="${c}">${CAT_LABELS[c]}</option>`))
+            .concat(CATS.map((k) => `<option value="${k}">${LABELS[k]}</option>`))
             .join('');
     }
 
-    function setMinDate() {
-        els.date.min = window.ui.todayISO();
-    }
-
-    function updateCharCount() {
-        if (!els.descCount) return;
-        els.descCount.textContent = `${els.description.value.length} characters`;
-    }
+    function setMinDate() { els.date.min = window.ui.todayISO(); }
+    function updateCharCount() { els.descCount.textContent = `${els.description.value.length} characters`; }
 
     function updateImagePreview() {
         const url = els.image.value.trim();
         if (!url) {
-            els.imagePreview.innerHTML = `<div class="w-full h-full flex items-center justify-center text-xs text-stone-400">Preview appears here</div>`;
+            els.imagePreview.innerHTML = 'Preview appears here';
             return;
         }
-        els.imagePreview.innerHTML = `<img src="${window.ui.escapeHtml(url)}" alt="Image preview" class="w-full h-full object-cover" onerror="this.outerHTML='<div class=\\'w-full h-full flex items-center justify-center text-xs text-rose-600\\'>Could not load image</div>'">`;
+        els.imagePreview.innerHTML = `<img src="${window.ui.escapeHtml(url)}" alt="Image preview" onerror="this.outerHTML='<div style=\\'padding:12px;color:var(--danger);font-size:.82rem\\'>Could not load image</div>'">`;
     }
 
     function fillFromEvent(event) {
         els.title.value = event.title || '';
-        els.category.value = CATEGORIES.includes((event.category || '').toLowerCase()) ? event.category.toLowerCase() : '';
+        els.category.value = CATS.includes((event.category || '').toLowerCase()) ? event.category.toLowerCase() : '';
         els.date.value = event.date ? event.date.slice(0, 10) : '';
         els.time.value = event.time || '';
         els.location.value = event.location || '';
@@ -114,11 +105,11 @@
     document.addEventListener('DOMContentLoaded', () => {
         if (!window.ui.requireAdmin()) return;
 
-        els.form        = document.getElementById('event-form');
-        els.heading     = document.getElementById('event-form-heading');
-        els.subheading  = document.getElementById('event-form-subheading');
-        els.eyebrow     = document.getElementById('event-form-eyebrow');
-        els.submitBtn   = document.getElementById('event-submit');
+        els.form         = document.getElementById('event-form');
+        els.heading      = document.getElementById('event-form-heading');
+        els.subheading   = document.getElementById('event-form-subheading');
+        els.eyebrow      = document.getElementById('event-form-eyebrow');
+        els.submitBtn    = document.getElementById('event-submit');
 
         els.title        = document.getElementById('event-title');
         els.category     = document.getElementById('event-category');

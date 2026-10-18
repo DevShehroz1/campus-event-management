@@ -1,19 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Event — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-stone-50 text-stone-900 font-sans antialiased flex flex-col min-h-screen">
+<body>
 
     <div id="site-header"></div>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 w-full">
-        <div id="event-details-content"></div>
+    <main class="wrap">
+        <section class="view" aria-label="Event details">
+            <a class="back" href="events.html"><span aria-hidden="true">←</span> Back to events</a>
+            <div id="event-details-content"></div>
+        </section>
     </main>
 
     <div id="site-footer"></div>
