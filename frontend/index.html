@@ -12,11 +12,10 @@
 
     <div id="site-header"></div>
 
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden pt-20 pb-24 px-6 border-b border-slate-800/80 bg-gradient-to-b from-slate-900 via-[#0f172a] to-[#0f172a]">
+    <section class="relative overflow-hidden pt-16 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 border-b border-slate-800/80 bg-gradient-to-b from-slate-900 via-[#0f172a] to-[#0f172a]">
         <div class="max-w-4xl mx-auto text-center relative z-10">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-6">
-                <span>✨ Fall Semester 2026 Live</span>
+                <span id="hero-university">University Events Portal</span>
             </div>
             <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-6">
                 Where campus culture <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 italic font-normal">comes alive.</span>
@@ -25,91 +24,46 @@
                 Explore curated university seminars, competitive workshops, and student-led activities. Secure your spot in seconds.
             </p>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <a href="events.html" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white px-7 py-3.5 rounded-xl font-semibold transition-all shadow-lg shadow-orange-600/30 text-center">Explore All Events</a>
-                <a href="login.html" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-7 py-3.5 rounded-xl font-semibold transition-all text-center">Host an Event</a>
+                <a href="events.html" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white px-7 py-3.5 rounded-xl font-semibold transition-all shadow-lg shadow-orange-600/30 text-center min-h-[44px] inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-orange-400">Explore All Events</a>
+                <a id="hero-secondary-btn" href="login.html?mode=register" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-7 py-3.5 rounded-xl font-semibold transition-all text-center min-h-[44px] inline-flex items-center justify-center">Create Account</a>
             </div>
         </div>
     </section>
 
-    <!-- Featured Events Section -->
-    <main class="flex-grow max-w-7xl mx-auto px-6 py-16 w-full">
-        <div class="flex justify-between items-end mb-10">
-            <div>
-                <p class="text-xs uppercase tracking-widest font-bold text-orange-500 mb-2">Handpicked</p>
-                <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Featured Experiences</h2>
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full">
+
+        <section class="mb-12" aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="sr-only">Campus event statistics</h2>
+            <div id="home-stats" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+        </section>
+
+        <section class="mb-14" aria-labelledby="browse-heading">
+            <div class="mb-5">
+                <p class="text-xs uppercase tracking-widest font-bold text-orange-500 mb-1">Explore</p>
+                <h2 id="browse-heading" class="text-2xl font-bold tracking-tight text-white">Browse by category</h2>
             </div>
-            <a href="events.html" class="text-sm font-semibold text-slate-400 hover:text-orange-400 transition-colors flex items-center gap-1">
-                View all<span>&rarr;</span>
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Card 1 -->
-            <article class="group bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden hover:border-slate-700 transition-all hover:shadow-2xl hover:-translate-y-1">
-                <div class="h-48 relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" alt="AI Workshop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-md border border-orange-500/20">Workshop</span>
-                        <span class="text-xs text-slate-400">Oct 25, 2026</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors">Intro to Neural Architecture</h3>
-                    <p class="text-slate-400 text-sm mt-2 line-clamp-2">Hands-on session building custom deep learning models from scratch using modern frameworks.</p>
-                    <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-                        <span class="text-xs font-medium text-slate-400">📍 Science Hall 4B</span>
-                        <a href="event-details.html?id=1" class="text-sm font-semibold text-orange-400 hover:text-orange-300 flex items-center gap-1">Details &rarr;</a>
-                    </div>
-                </div>
-            </article>
+            <div id="home-categories" class="flex flex-wrap gap-3"></div>
+        </section>
 
-            <!-- Card 2 -->
-            <article class="group bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden hover:border-slate-700 transition-all hover:shadow-2xl hover:-translate-y-1">
-                <div class="h-48 relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800&auto=format&fit=crop" alt="Robotics Competition" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+        <section aria-labelledby="featured-heading">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+                <div>
+                    <p class="text-xs uppercase tracking-widest font-bold text-orange-500 mb-1">Handpicked</p>
+                    <h2 id="featured-heading" class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Featured events</h2>
                 </div>
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Competition</span>
-                        <span class="text-xs text-slate-400">Nov 02, 2026</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors">Annual Autonomous Bot Clash</h3>
-                    <p class="text-slate-400 text-sm mt-2 line-clamp-2">Pit your custom-programmed hardware against campus engineering teams for top honors.</p>
-                    <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-                        <span class="text-xs font-medium text-slate-400">📍 University Gymnasium</span>
-                        <a href="event-details.html?id=2" class="text-sm font-semibold text-orange-400 hover:text-orange-300 flex items-center gap-1">Details &rarr;</a>
-                    </div>
-                </div>
-            </article>
+                <a href="events.html" class="text-sm font-semibold text-slate-400 hover:text-orange-400 transition-colors inline-flex items-center gap-1">
+                    View all <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+            <div id="home-featured" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
 
-            <!-- Card 3 -->
-            <article class="group bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden hover:border-slate-700 transition-all hover:shadow-2xl hover:-translate-y-1">
-                <div class="h-48 relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=800&auto=format&fit=crop" alt="Cricket League" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded-md border border-sky-500/20">Sports</span>
-                        <span class="text-xs text-slate-400">Nov 10, 2026</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors">Inter-Department Cricket League</h3>
-                    <p class="text-slate-400 text-sm mt-2 line-clamp-2">The premier seasonal sporting tournament. Register your departmental squad today.</p>
-                    <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-                        <span class="text-xs font-medium text-slate-400">📍 Main Sports Complex</span>
-                        <a href="event-details.html?id=3" class="text-sm font-semibold text-orange-400 hover:text-orange-300 flex items-center gap-1">Details &rarr;</a>
-                    </div>
-                </div>
-            </article>
-        </div>
     </main>
 
     <div id="site-footer"></div>
 
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/pages/home.js"></script>
 </body>
 </html>
