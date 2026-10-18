@@ -8,47 +8,20 @@
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-[#0f172a] text-slate-100 font-sans antialiased flex flex-col min-h-screen selection:bg-orange-500 selection:text-white">
+<body class="bg-stone-50 text-stone-900 font-sans antialiased flex flex-col min-h-screen">
 
     <div id="site-header"></div>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-6 py-12 w-full">
-        
-        <!-- User Profile Banner -->
-        <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-8 mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl">
-            <div class="flex items-center gap-5">
-                <div id="userInitials" class="w-16 h-16 rounded-2xl bg-orange-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-orange-600/30">
-                    US
-                </div>
-                <div>
-                    <h1 id="userNameDisplay" class="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
-                    <p id="userDeptDisplay" class="text-slate-400 text-xs mt-1 font-medium">ID: 4091</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3 flex-wrap">
-                <!-- Hidden by default, unhidden via JS only for admin -->
-                <a href="create-event.html" id="hostEventBtn" class="hidden bg-orange-600 hover:bg-orange-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-orange-600/30">Host New Event</a>
-                <a href="events.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border border-slate-700">Browse Events Directory</a>
-            </div>
-        </div>
-
-        <!-- Registrations Section -->
-        <div class="mb-6">
-            <h2 class="text-xl font-bold text-white tracking-tight">My Event Registrations</h2>
-            <p class="text-slate-400 text-xs mt-0.5">Manage the events you have signed up for</p>
-        </div>
-
-        <div id="dashboardRegistrations" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Dynamically rendered registrations will appear here -->
-        </div>
-
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 w-full">
+        <div id="dashboard-banner" class="mb-10"></div>
+        <div id="dashboard-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"></div>
+        <div id="dashboard-body"></div>
     </main>
 
     <div id="site-footer"></div>
 
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/pages/dashboard.js"></script>
 </body>
 </html>
