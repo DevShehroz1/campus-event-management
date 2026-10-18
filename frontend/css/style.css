@@ -23,3 +23,29 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #475569;
 }
+
+/* Toast + modal animations */
+@keyframes toastIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes toastOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-6px); }
+}
+.toast-enter { animation: toastIn 180ms ease-out both; }
+.toast-leave { animation: toastOut 180ms ease-in both; }
+
+@keyframes modalIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes modalOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+.modal-enter { animation: modalIn 150ms ease-out both; }
+.modal-leave { animation: modalOut 150ms ease-in both; }
+
+/* Prevent horizontal overflow on narrow screens */
+html, body { overflow-x: hidden; }
