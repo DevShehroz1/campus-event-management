@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/style.css">
@@ -11,11 +11,13 @@
 
     <div id="site-header"></div>
 
-    <main class="wrap">
-        <section class="view" aria-label="Dashboard">
-            <div id="dashboard-banner"></div>
-            <div class="tiles" id="dashboard-stats"></div>
-            <div id="dashboard-body"></div>
+    <main>
+        <section class="section">
+            <div class="wrap" style="display:grid;gap:28px">
+                <div id="dashboard-banner"></div>
+                <div id="dashboard-stats" class="tiles"></div>
+                <div id="dashboard-body"></div>
+            </div>
         </section>
     </main>
 

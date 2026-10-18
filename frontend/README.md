@@ -49,8 +49,9 @@ Or edit the fallback URL inside `js/api.js`.
 
 ## Design system
 
-- **Theme:** glass / ticket — mid-tone indigo ground (`#262c41 → #343c58`) with ambient colour glows, frosted-glass panels, event cards styled as physical tickets with a date stub + perforation.
-- **Typography:** Bricolage Grotesque (display), Manrope (body), IBM Plex Mono (labels, numbers).
-- **Shape:** pill-shaped buttons (`999px`), 22 px glass panels, 14 px inputs. See `css/style.css` for the full token set (`--glass`, `--ink`, `--accent`, …).
-- **Accent:** warm orange gradient (`#e8915f → #db7c4c`) for primary CTAs; danger uses `#f0a3ad`; registered state uses `#5fe0a9`.
+- **Theme:** clean light — white surfaces on a `#fafafa` canvas, subtle 1 px borders (`#e5e5e5`), soft elevation (`--shadow-1/2/3`), neutral grey ink.
+- **Typography:** Inter throughout (400 / 500 / 600 / 700 / 800).
+- **Shape:** standard — `8 px` buttons / inputs, `14 px` cards, `999 px` chips, pills only for category badges.
+- **Accent:** orange `#f97316` (hover `#ea580c`); danger `#dc2626`; success `#16a34a`.
+- **Category colours** (badge accents): workshop = orange, seminar = violet, competition = emerald, sports = blue, conference = red, society = fuchsia.
 - No Tailwind, no build step — pure CSS classes in `css/style.css`.

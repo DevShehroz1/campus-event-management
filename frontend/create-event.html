@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create event — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/style.css">
@@ -11,88 +11,88 @@
 
     <div id="site-header"></div>
 
-    <main class="wrap">
-        <section class="view" aria-label="Create event">
+    <main>
+        <section class="section">
+            <div class="wrap" style="max-width:860px">
+                <div style="margin-bottom:24px">
+                    <span class="eyebrow" id="event-form-eyebrow">Admin</span>
+                    <h1 id="event-form-heading" style="margin-top:6px">Host a new event</h1>
+                    <p class="muted" id="event-form-subheading" style="margin-top:8px">Create seminars, workshops, sports, and society activities. Fields marked * are required.</p>
+                </div>
 
-            <div class="page-title">
-                <span class="eyebrow" id="event-form-eyebrow">Admin</span>
-                <h1 id="event-form-heading">Host a new event</h1>
-                <p id="event-form-subheading">Create seminars, workshops, sports, and society activities. Fields marked with * are required.</p>
+                <form id="event-form" class="card elevated" style="display:grid;gap:18px" novalidate>
+
+                    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                        <div class="field">
+                            <label for="event-title">Title *</label>
+                            <input id="event-title" type="text" required placeholder="Advanced AI Hackathon">
+                        </div>
+                        <div class="field">
+                            <label for="event-category">Category *</label>
+                            <select id="event-category" required><option value="">Choose a category…</option></select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                        <div class="field">
+                            <label for="event-date">Date *</label>
+                            <input id="event-date" type="date" required>
+                        </div>
+                        <div class="field">
+                            <label for="event-time">Time *</label>
+                            <input id="event-time" type="text" required placeholder="10:00 AM – 02:00 PM">
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                        <div class="field">
+                            <label for="event-location">Location / venue *</label>
+                            <input id="event-location" type="text" required placeholder="Main Auditorium">
+                        </div>
+                        <div class="field">
+                            <label for="event-capacity">Capacity *</label>
+                            <input id="event-capacity" type="number" min="1" step="1" required placeholder="100">
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                        <div class="field">
+                            <label for="event-organizer">Organizer *</label>
+                            <input id="event-organizer" type="text" required placeholder="AI &amp; Machine Learning Society">
+                        </div>
+                        <div class="field">
+                            <label for="event-prerequisites">Prerequisites</label>
+                            <input id="event-prerequisites" type="text" placeholder="None" value="None">
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px">
+                        <div class="field">
+                            <label for="event-image">Image URL *</label>
+                            <input id="event-image" type="url" required placeholder="https://images.unsplash.com/...">
+                            <span class="hint">Use a wide landscape image for best results.</span>
+                        </div>
+                        <div class="field">
+                            <span class="label">Preview</span>
+                            <div id="event-image-preview" class="image-preview">Preview appears here</div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <label for="event-description">Description *</label>
+                            <span class="hint" id="event-description-count">0 characters</span>
+                        </div>
+                        <textarea id="event-description" rows="6" required placeholder="At least 20 characters describing what students should expect, agenda, speakers, etc."></textarea>
+                    </div>
+
+                    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding-top:4px">
+                        <button type="button" class="btn btn-outline" id="event-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="event-submit">Publish event</button>
+                    </div>
+
+                </form>
             </div>
-
-            <form id="event-form" class="form glass" style="padding:24px;max-width:860px" novalidate>
-
-                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-                    <div class="field">
-                        <label for="event-title">Title *</label>
-                        <input id="event-title" type="text" required placeholder="Advanced AI Hackathon">
-                    </div>
-                    <div class="field">
-                        <label for="event-category">Category *</label>
-                        <select id="event-category" required><option value="">Choose a category…</option></select>
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-                    <div class="field">
-                        <label for="event-date">Date *</label>
-                        <input id="event-date" type="date" required>
-                    </div>
-                    <div class="field">
-                        <label for="event-time">Time *</label>
-                        <input id="event-time" type="text" required placeholder="10:00 AM – 02:00 PM">
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-                    <div class="field">
-                        <label for="event-location">Location / venue *</label>
-                        <input id="event-location" type="text" required placeholder="Main Auditorium">
-                    </div>
-                    <div class="field">
-                        <label for="event-capacity">Capacity *</label>
-                        <input id="event-capacity" type="number" min="1" step="1" required placeholder="100">
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-                    <div class="field">
-                        <label for="event-organizer">Organizer *</label>
-                        <input id="event-organizer" type="text" required placeholder="AI &amp; Machine Learning Society">
-                    </div>
-                    <div class="field">
-                        <label for="event-prerequisites">Prerequisites</label>
-                        <input id="event-prerequisites" type="text" placeholder="None" value="None">
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px">
-                    <div class="field">
-                        <label for="event-image">Image URL *</label>
-                        <input id="event-image" type="url" required placeholder="https://images.unsplash.com/...">
-                        <span class="hint">Use a wide landscape image for best results.</span>
-                    </div>
-                    <div class="field">
-                        <span class="label">Preview</span>
-                        <div id="event-image-preview" class="image-preview">Preview appears here</div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div style="display:flex;justify-content:space-between;align-items:center">
-                        <label for="event-description">Description *</label>
-                        <span class="faint mono" id="event-description-count" style="font-size:.78rem">0 characters</span>
-                    </div>
-                    <textarea id="event-description" rows="6" required placeholder="At least 20 characters describing what students should expect, agenda, speakers, etc."></textarea>
-                </div>
-
-                <div style="display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap">
-                    <button type="button" class="btn btn-ghost" id="event-cancel">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="event-submit">Publish event</button>
-                </div>
-
-            </form>
-
         </section>
     </main>
 

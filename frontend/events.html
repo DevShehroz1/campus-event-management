@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Events — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/style.css">
@@ -11,18 +11,18 @@
 
     <div id="site-header"></div>
 
-    <main class="wrap">
-        <section class="view" aria-label="Events">
+    <main>
+        <section class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div>
+                        <h1>All events</h1>
+                        <p>Search by name, place or organiser. Filter by category to narrow things down.</p>
+                    </div>
+                </div>
 
-            <div class="page-title">
-                <span class="eyebrow">Events directory</span>
-                <h1>All campus events</h1>
-                <p>Search by name, place or organiser, or narrow the list by category.</p>
-            </div>
-
-            <div class="stack">
-                <div class="toolbar glass">
-                    <div class="row">
+                <form id="events-filters" class="toolbar" role="search" aria-label="Filter events" onsubmit="event.preventDefault();">
+                    <div class="toolbar-row">
                         <div class="search">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
                             <label for="events-search" class="sr-only">Search events</label>
@@ -32,16 +32,15 @@
                         <select id="events-category"></select>
                     </div>
                     <div class="chips" id="events-chips"></div>
-                </div>
+                </form>
 
-                <div class="result-line">
+                <div class="result-line" style="margin-top:20px;margin-bottom:16px">
                     <span id="events-count"></span>
-                    <button class="btn btn-ghost" id="events-clear" hidden>Clear filters</button>
+                    <button class="btn btn-ghost btn-sm" id="events-clear" hidden>Clear filters</button>
                 </div>
 
-                <div class="grid" id="events-grid"></div>
+                <div class="event-grid" id="events-grid"></div>
             </div>
-
         </section>
     </main>
 

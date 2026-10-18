@@ -12,15 +12,23 @@
         society: 'Society'
     };
     const CATEGORY_KEYS = Object.keys(CATEGORY_LABELS);
+    const CATEGORY_ICONS = {
+        workshop: '🛠',
+        seminar: '🎤',
+        competition: '🏆',
+        sports: '⚽',
+        conference: '🏛',
+        society: '🎨'
+    };
 
-    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     const MONTH_LONG = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const WEEKDAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
     const ICON = {
-        pin:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
-        clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
-        search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
+        pin:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+        clock:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+        search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+        calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>'
     };
 
     const LEGACY_KEYS = ['isLoggedIn','currentUserEmail','userName','userDept','campusEvents','campusAccounts'];
@@ -51,7 +59,13 @@
     function formatDate(iso) {
         const d = parseLocalDate(iso);
         if (!d) return '';
-        return `${WEEKDAY[d.getDay()]}, ${String(d.getDate()).padStart(2, '0')} ${MONTH_LONG[d.getMonth()]} ${d.getFullYear()}`;
+        return `${MONTH_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    }
+
+    function formatDateLong(iso) {
+        const d = parseLocalDate(iso);
+        if (!d) return '';
+        return `${WEEKDAY[d.getDay()]}, ${MONTH_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
     }
 
     function todayISO() {
@@ -75,43 +89,32 @@
     }
 
     function initials(name) {
-        if (!name) return '';
+        if (!name) return '?';
         return name.trim().split(/\s+/).map((p) => p[0] || '').join('').slice(0, 2).toUpperCase();
     }
 
-    function categoryLabel(cat) { return CATEGORY_LABELS[(cat || '').toLowerCase()] || cat || ''; }
+    function categoryLabel(cat) { return CATEGORY_LABELS[(cat || '').toLowerCase()] || (cat || ''); }
 
     function categoryBadge(category) {
         const key = (category || '').toLowerCase();
         return `<span class="badge" data-cat="${escapeHtml(key)}">${escapeHtml(categoryLabel(key))}</span>`;
     }
 
-    function stubHTML(event) {
-        const d = parseLocalDate(event.date);
-        if (!d) return '';
-        return `<div class="stub"><b class="mono">${String(d.getDate()).padStart(2, '0')}</b><span>${MONTHS[d.getMonth()]}</span></div>`;
-    }
-
-    function seatsSection(event) {
-        const capacity = Number(event.capacity);
+    function seatsBadge(event) {
         const left = Number(event.seatsLeft);
-        if (!Number.isFinite(capacity) || !Number.isFinite(left) || capacity <= 0) return '';
-        const taken = Math.max(0, capacity - left);
-        const pct = Math.min(100, Math.round((taken / capacity) * 100));
-        const low = left > 0 && left < 5;
-        const label = left === 0
-            ? '<b>Full</b>'
-            : (low ? `<b>Only ${left} left</b>` : `<b>${left}</b> of ${capacity} left`);
-        return `
-            <div class="seats${low ? ' low' : ''}">
-                <div class="seats-label"><span>${label}</span><span>${pct}%</span></div>
-                <div class="bar"><i style="width:${pct}%"></i></div>
-            </div>
-        `;
+        if (!Number.isFinite(left)) return '<span class="badge plain">Seats TBA</span>';
+        if (left === 0) return '<span class="badge danger">Full</span>';
+        if (left < 5) return `<span class="badge warn">${left} left</span>`;
+        return `<span class="badge plain">${left} seats</span>`;
     }
 
-    function metaRow(event) {
-        return `<div class="meta"><span>${ICON.pin}${escapeHtml(event.location || '—')}</span>${event.time ? `<span>${ICON.clock}${escapeHtml(event.time)}</span>` : ''}</div>`;
+    function seatsBar(event) {
+        const left = Number(event.seatsLeft);
+        const cap = Number(event.capacity);
+        if (!Number.isFinite(left) || !Number.isFinite(cap) || cap <= 0) return '';
+        const taken = Math.max(0, cap - left);
+        const pct = Math.min(100, Math.round((taken / cap) * 100));
+        return `<div class="bar${left > 0 && left < 5 ? ' low' : ''}"><i style="width:${pct}%"></i></div>`;
     }
 
     function eventCardHTML(event, { showAdminActions = false } = {}) {
@@ -119,30 +122,40 @@
         const key = (event.category || '').toLowerCase();
         const title = escapeHtml(event.title || 'Untitled event');
         const description = escapeHtml(event.description || '');
-        const art = event.image
-            ? `<img src="${escapeHtml(event.image)}" alt="${title}" loading="lazy" onerror="this.remove()">`
+        const location = escapeHtml(event.location || '—');
+        const dateLabel = formatDate(event.date);
+        const image = event.image
+            ? `<img src="${escapeHtml(event.image)}" alt="${title}" loading="lazy" onerror="this.outerHTML='<div class=\\'placeholder\\'>${escapeHtml(categoryLabel(key)) || 'event'}</div>'">`
+            : `<div class="placeholder">${escapeHtml(categoryLabel(key)) || 'event'}</div>`;
+
+        const topBadges = past
+            ? `<div class="top-badges"><span class="badge plain">Ended</span></div>`
             : '';
+
         const adminActions = showAdminActions
             ? `<div class="admin-actions">
-                   <a class="btn btn-glass" href="create-event.html?id=${encodeURIComponent(event.id)}" style="min-height:36px;padding:0 .8rem;font-size:.78rem">Edit</a>
-                   <button type="button" class="btn btn-danger" data-delete-event="${encodeURIComponent(event.id)}" style="min-height:36px;padding:0 .8rem;font-size:.78rem">Delete</button>
+                   <a class="btn btn-outline btn-sm" href="create-event.html?id=${encodeURIComponent(event.id)}">Edit</a>
+                   <button type="button" class="btn btn-danger-solid btn-sm" data-delete-event="${encodeURIComponent(event.id)}">Delete</button>
                </div>`
             : '';
+
         return `
-            <article class="ticket glass${past ? ' ended' : ''}" data-cat="${escapeHtml(key)}">
-                <div class="ticket-art">${art}${stubHTML(event)}</div>
-                <div class="perf"></div>
-                <div class="ticket-body">
-                    <div class="ticket-top">
+            <article class="event-card${past ? ' ended' : ''}">
+                <div class="image">
+                    ${image}
+                    ${topBadges}
+                    ${adminActions}
+                </div>
+                <div class="body">
+                    <div class="top-row">
                         ${categoryBadge(key)}
-                        ${past ? '<span class="badge ended">Ended</span>' : (event.time ? `<span class="mono faint" style="font-size:.74rem">${escapeHtml(event.time.split('–')[0].split('-')[0].trim())}</span>` : '')}
+                        <span>${escapeHtml(dateLabel)}</span>
                     </div>
-                    <h3><a href="event-details.html?id=${encodeURIComponent(event.id)}">${title}</a></h3>
+                    <h3 class="title"><a href="event-details.html?id=${encodeURIComponent(event.id)}">${title}</a></h3>
                     <p class="desc">${description}</p>
-                    ${metaRow(event)}
-                    <div class="ticket-foot">
-                        ${seatsSection(event) || '<span class="faint" style="font-size:.84rem">Seats TBA</span>'}
-                        ${adminActions || '<span class="go">Details →</span>'}
+                    <div class="foot">
+                        <span class="meta">${ICON.pin}<span>${location}</span></span>
+                        ${seatsBadge(event)}
                     </div>
                 </div>
             </article>
@@ -151,25 +164,24 @@
 
     function skeletonCards(n = 3) {
         return Array.from({ length: n }).map(() => `
-            <article class="ticket glass skel-card">
-                <div class="ticket-art skel skel-art"></div>
-                <div class="perf"></div>
-                <div class="ticket-body skel-body">
-                    <div class="skel" style="height:14px;width:40%"></div>
-                    <div class="skel" style="height:20px;width:85%"></div>
+            <div class="skel-card">
+                <div class="skel skel-art"></div>
+                <div class="skel-body">
+                    <div class="skel" style="height:12px;width:35%"></div>
+                    <div class="skel" style="height:18px;width:80%"></div>
                     <div class="skel" style="height:12px;width:100%"></div>
-                    <div class="skel" style="height:12px;width:70%"></div>
+                    <div class="skel" style="height:12px;width:60%"></div>
                 </div>
-            </article>
+            </div>
         `).join('');
     }
 
     function emptyStateHTML({ icon = '✦', title, text, actionHTML = '' }) {
         return `
-            <div class="empty glass" style="grid-column:1/-1">
-                <div class="ring" aria-hidden="true">${escapeHtml(icon)}</div>
+            <div class="empty">
+                <div class="glyph" aria-hidden="true">${escapeHtml(icon)}</div>
                 <h3>${escapeHtml(title)}</h3>
-                <p class="muted">${escapeHtml(text)}</p>
+                <p>${escapeHtml(text)}</p>
                 ${actionHTML}
             </div>
         `;
@@ -177,65 +189,46 @@
 
     function errorStateHTML(message) {
         return `
-            <div class="empty glass" style="grid-column:1/-1">
-                <div class="ring" aria-hidden="true">!</div>
+            <div class="error-state">
+                <div class="glyph" aria-hidden="true">!</div>
                 <h3>Something went wrong</h3>
-                <p class="muted">${escapeHtml(message || 'Please try again.')}</p>
-                <button type="button" class="btn btn-glass" data-retry>Try again</button>
+                <p>${escapeHtml(message || 'Please try again.')}</p>
+                <button type="button" class="btn btn-outline" data-retry>Try again</button>
             </div>
         `;
     }
 
-    function headerNavLinks(activePage) {
-        const links = [
-            { href: 'index.html',   label: 'Home',     key: 'home' },
-            { href: 'events.html',  label: 'Events',   key: 'events' }
-        ];
-        if (global.isLoggedIn()) links.push({ href: 'dashboard.html', label: 'Dashboard', key: 'dashboard' });
-        if (global.isAdmin())    links.push({ href: 'create-event.html', label: 'Create Event', key: 'create' });
-        return links.map((l) => {
-            const curr = l.key === activePage ? ' aria-current="page"' : '';
-            return `<a class="nav-link" href="${l.href}"${curr}>${escapeHtml(l.label)}</a>`;
-        }).join('');
+    function navLinkHTML(href, label, active, data) {
+        const curr = active ? ' aria-current="page"' : '';
+        const attrs = data ? ' data-nav-link' : '';
+        return `<a class="nav-link" href="${href}"${curr}${attrs}>${escapeHtml(label)}</a>`;
     }
 
     function headerAuth(user) {
         if (user) {
+            const first = (user.name || '').split(' ')[0] || 'Account';
             return `
-                <div class="nav-user">
-                    <span class="avatar-sm">${escapeHtml(initials(user.name))}</span>
-                    <span>${escapeHtml((user.name || '').split(' ')[0] || 'Account')}</span>
-                </div>
-                <button type="button" class="btn btn-glass" data-signout>Sign out</button>
+                <span class="header-user">
+                    <span class="avatar-sm" aria-hidden="true">${escapeHtml(initials(user.name))}</span>
+                    <span class="header-user-name">${escapeHtml(first)}</span>
+                </span>
+                <button type="button" class="btn btn-outline btn-sm" data-signout>Sign out</button>
             `;
         }
         return `
-            <a class="btn btn-ghost" href="login.html">Sign in</a>
-            <a class="btn btn-primary" href="login.html?mode=register">Get started</a>
+            <a class="btn btn-ghost btn-sm" href="login.html">Sign in</a>
+            <a class="btn btn-primary btn-sm" href="login.html?mode=register">Create account</a>
         `;
-    }
-
-    function mobileLinks(activePage) {
-        const links = [
-            { href: 'index.html',   label: 'Home',     key: 'home' },
-            { href: 'events.html',  label: 'Events',   key: 'events' }
-        ];
-        if (global.isLoggedIn()) links.push({ href: 'dashboard.html', label: 'Dashboard', key: 'dashboard' });
-        if (global.isAdmin())    links.push({ href: 'create-event.html', label: 'Create Event', key: 'create' });
-        return links.map((l) => {
-            const curr = l.key === activePage ? ' aria-current="page"' : '';
-            return `<a class="nav-link" href="${l.href}"${curr} data-nav-link>${escapeHtml(l.label)}</a>`;
-        }).join('');
     }
 
     function mobileAuth(user) {
         if (user) {
-            return `<div class="row"><button type="button" class="btn btn-glass btn-block" data-signout>Sign out</button></div>`;
+            return `<div class="mobile-auth"><button type="button" class="btn btn-outline btn-block" data-signout>Sign out</button></div>`;
         }
         return `
-            <div class="row">
-                <a class="btn btn-glass" href="login.html">Sign in</a>
-                <a class="btn btn-primary" href="login.html?mode=register">Get started</a>
+            <div class="mobile-auth">
+                <a class="btn btn-outline btn-block" href="login.html">Sign in</a>
+                <a class="btn btn-primary btn-block" href="login.html?mode=register">Create account</a>
             </div>
         `;
     }
@@ -244,28 +237,33 @@
         const slot = document.getElementById('site-header');
         if (!slot) return;
         const user = global.getCurrentUser();
+        const links = [
+            { href: 'index.html',  label: 'Home',   key: 'home' },
+            { href: 'events.html', label: 'Events', key: 'events' }
+        ];
+        if (global.isLoggedIn()) links.push({ href: 'dashboard.html', label: 'Dashboard', key: 'dashboard' });
+        if (global.isAdmin())    links.push({ href: 'create-event.html', label: 'Create event', key: 'create' });
+
         slot.innerHTML = `
-            <div class="nav-shell">
-                <div class="wrap">
-                    <div class="nav glass" role="navigation" aria-label="Main">
-                        <a class="brand" href="index.html" aria-label="CampusHub home">
-                            <span class="brand-mark" aria-hidden="true">C</span>
-                            <span>CampusHub<small>${escapeHtml(UNIVERSITY_NAME)}</small></span>
-                        </a>
-                        <nav class="nav-links" aria-label="Primary">
-                            ${headerNavLinks(activePage)}
-                        </nav>
-                        <div class="nav-actions">
-                            ${headerAuth(user)}
-                            <button class="menu-btn" id="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav" type="button"><span></span><span></span><span></span></button>
-                        </div>
-                    </div>
-                    <div class="mobile-menu glass" id="mobile-nav">
-                        ${mobileLinks(activePage)}
-                        ${mobileAuth(user)}
+            <header class="site-header">
+                <div class="wrap header-row">
+                    <a class="brand" href="index.html" aria-label="CampusHub home">
+                        <span class="brand-mark" aria-hidden="true">C</span>
+                        <span class="brand-name">CampusHub</span>
+                    </a>
+                    <nav class="primary-nav" aria-label="Primary">
+                        ${links.map((l) => navLinkHTML(l.href, l.label, l.key === activePage)).join('')}
+                    </nav>
+                    <div class="header-actions">
+                        ${headerAuth(user)}
+                        <button class="menu-btn" id="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav" type="button"><span></span><span></span><span></span></button>
                     </div>
                 </div>
-            </div>
+                <div class="mobile-nav" id="mobile-nav">
+                    ${links.map((l) => navLinkHTML(l.href, l.label, l.key === activePage, true)).join('')}
+                    ${mobileAuth(user)}
+                </div>
+            </header>
         `;
         wireMobileNav();
         wireSignOut();
@@ -303,15 +301,13 @@
         const loggedIn = global.isLoggedIn();
         const year = new Date().getFullYear();
         slot.innerHTML = `
-            <footer>
+            <footer class="site-footer">
                 <div class="wrap">
-                    <div class="foot glass">
-                        <span>© ${year} CampusHub · ${escapeHtml(UNIVERSITY_NAME)} Campus Event Management System</span>
-                        <nav aria-label="Footer">
-                            <a href="events.html">Events</a>
-                            ${loggedIn ? '<a href="dashboard.html">Dashboard</a>' : '<a href="login.html">Sign in</a>'}
-                        </nav>
-                    </div>
+                    <span>© ${year} CampusHub · ${escapeHtml(UNIVERSITY_NAME)}</span>
+                    <nav aria-label="Footer">
+                        <a href="events.html">Events</a>
+                        ${loggedIn ? '<a href="dashboard.html">Dashboard</a>' : '<a href="login.html">Sign in</a>'}
+                    </nav>
                 </div>
             </footer>
         `;
@@ -333,7 +329,7 @@
     function showToast(message, type = 'success') {
         const root = getToastRoot();
         const el = document.createElement('div');
-        el.className = `toast glass ${type}`;
+        el.className = `toast ${type}`;
         el.innerHTML = `<span class="dot" aria-hidden="true"></span><p>${escapeHtml(message)}</p><button type="button" class="close" aria-label="Dismiss">×</button>`;
         const close = () => el.remove();
         el.querySelector('.close').addEventListener('click', close);
@@ -362,12 +358,12 @@
             root.setAttribute('role', 'dialog');
             root.setAttribute('aria-modal', 'true');
             root.innerHTML = `
-                <div class="modal glass" tabindex="-1">
+                <div class="modal" tabindex="-1">
                     <h2>${escapeHtml(title)}</h2>
-                    <p class="muted">${escapeHtml(message)}</p>
+                    <p>${escapeHtml(message)}</p>
                     <div class="actions">
-                        <button type="button" class="btn btn-ghost" data-cancel>${escapeHtml(cancelText)}</button>
-                        <button type="button" class="${danger ? 'btn btn-danger' : 'btn btn-primary'}" data-confirm>${escapeHtml(confirmText)}</button>
+                        <button type="button" class="btn btn-outline" data-cancel>${escapeHtml(cancelText)}</button>
+                        <button type="button" class="${danger ? 'btn btn-danger-solid' : 'btn btn-primary'}" data-confirm>${escapeHtml(confirmText)}</button>
                     </div>
                 </div>
             `;
@@ -393,7 +389,7 @@
             if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
             btn.disabled = true;
             btn.setAttribute('aria-busy', 'true');
-            btn.innerHTML = `<span class="dot" style="width:10px;height:10px;border-radius:50%;background:currentColor;opacity:.6;animation:toastIn .6s infinite alternate"></span>${escapeHtml(loadingText || 'Working…')}`;
+            btn.textContent = loadingText || 'Working…';
         } else {
             btn.disabled = false;
             btn.removeAttribute('aria-busy');
@@ -425,6 +421,7 @@
             title: `Delete "${event.title}"?`,
             message: 'This also removes all its registrations.',
             confirmText: 'Delete',
+            cancelText: 'Keep event',
             danger: true
         });
         if (!ok) return;
@@ -448,16 +445,7 @@
         return '';
     }
 
-    function ensureGlows() {
-        if (document.querySelector('.glow.a')) return;
-        const a = document.createElement('div'); a.className = 'glow a'; a.setAttribute('aria-hidden', 'true');
-        const b = document.createElement('div'); b.className = 'glow b'; b.setAttribute('aria-hidden', 'true');
-        document.body.prepend(b);
-        document.body.prepend(a);
-    }
-
     function onReady() {
-        ensureGlows();
         renderHeader(activePageFromPath());
         renderFooter();
         consumeFlash();
@@ -467,9 +455,11 @@
         UNIVERSITY_NAME,
         CATEGORY_LABELS,
         CATEGORY_KEYS,
+        CATEGORY_ICONS,
         ICON,
         escapeHtml,
         formatDate,
+        formatDateLong,
         todayISO,
         isPastDate,
         parseLocalDate,
@@ -478,9 +468,8 @@
         initials,
         categoryLabel,
         categoryBadge,
-        stubHTML,
-        seatsSection,
-        metaRow,
+        seatsBadge,
+        seatsBar,
         eventCardHTML,
         skeletonCards,
         emptyStateHTML,
