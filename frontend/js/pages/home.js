@@ -21,21 +21,34 @@
         const seats = upcoming.reduce((s, e) => s + (Number(e.seatsLeft) || 0), 0);
         const items = [
             [upcoming.length, 'upcoming events'],
-            [events.length, 'events total'],
-            [cats.size, 'categories'],
-            [seats, 'seats still open']
+            [events.length,   'events total'],
+            [cats.size,       'categories'],
+            [seats,           'seats still open']
         ];
         slot.innerHTML = items.map(([n, l]) =>
-            `<div class="stat"><b class="mono">${n}</b><span>${window.ui.escapeHtml(l)}</span></div>`
+            `<div class="stat"><b>${n}</b><span>${window.ui.escapeHtml(l)}</span></div>`
         ).join('');
     }
 
-    function renderChips() {
-        const slot = document.getElementById('home-chips');
+    function renderCategories(events) {
+        const slot = document.getElementById('home-categories');
         if (!slot) return;
-        slot.innerHTML = window.ui.CATEGORY_KEYS.map((k) =>
-            `<a class="chip" href="events.html?category=${encodeURIComponent(k)}"><i></i>${window.ui.escapeHtml(window.ui.CATEGORY_LABELS[k])}</a>`
-        ).join('');
+        const counts = new Map();
+        events.forEach((e) => {
+            const k = (e.category || '').toLowerCase();
+            if (!k) return;
+            counts.set(k, (counts.get(k) || 0) + 1);
+        });
+        slot.innerHTML = window.ui.CATEGORY_KEYS.map((k) => {
+            const n = counts.get(k) || 0;
+            return `
+                <a class="category-card" href="events.html?category=${encodeURIComponent(k)}">
+                    <span class="cat-icon" aria-hidden="true">${window.ui.CATEGORY_ICONS[k] || '•'}</span>
+                    <span class="cat-name">${window.ui.escapeHtml(window.ui.CATEGORY_LABELS[k])}</span>
+                    <span class="cat-count">${n} ${n === 1 ? 'event' : 'events'}</span>
+                </a>
+            `;
+        }).join('');
     }
 
     function renderFeatured(events) {
@@ -50,19 +63,11 @@
                 icon: '📅',
                 title: 'No upcoming events yet',
                 text: 'Check back soon or browse the full directory.',
-                actionHTML: `<a class="btn btn-primary" href="events.html">Browse events</a>`
+                actionHTML: '<a class="btn btn-primary" href="events.html">Browse all events</a>'
             });
             return;
         }
         slot.innerHTML = upcoming.map((e) => window.ui.eventCardHTML(e)).join('');
-        renderHeroStack(upcoming);
-    }
-
-    function renderHeroStack(upcoming) {
-        const slot = document.getElementById('home-hero-stack');
-        if (!slot) return;
-        const picks = upcoming.slice(0, 2);
-        slot.innerHTML = picks.map((e) => window.ui.eventCardHTML(e)).join('');
     }
 
     async function load() {
@@ -71,8 +76,11 @@
         try {
             const events = await window.api.getEvents();
             renderStats(events);
+            renderCategories(events);
             renderFeatured(events);
         } catch (err) {
+            renderStats([]);
+            renderCategories([]);
             if (slot) {
                 slot.innerHTML = window.ui.errorStateHTML(err.message);
                 const retry = slot.querySelector('[data-retry]');
@@ -83,7 +91,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         heroSecondary();
-        renderChips();
         load();
     });
 })();

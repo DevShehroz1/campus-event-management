@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign in — CampusHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/style.css">
@@ -11,41 +11,54 @@
 
     <div id="site-header"></div>
 
-    <main class="wrap">
-        <section class="view" aria-label="Sign in">
-            <div class="auth">
-                <div class="auth-intro">
-                    <span class="eyebrow">Student portal</span>
-                    <h1 style="margin-top:10px">Your semester, <span style="color:var(--ink-2)">booked.</span></h1>
-                    <p class="muted" style="margin-top:16px;max-width:46ch">Sign in with your university email to register for events, keep track of your seats and get reminders before things start.</p>
-                    <div class="hero-stack" id="auth-stack" style="margin-top:24px;min-height:260px" aria-hidden="true"></div>
+    <main>
+        <div class="auth-shell">
+            <div class="auth-card card elevated">
+                <div class="tabs" role="tablist" aria-label="Account">
+                    <button class="tab" role="tab" id="tab-login" aria-selected="true" aria-controls="login-form">Sign in</button>
+                    <button class="tab" role="tab" id="tab-register" aria-selected="false" aria-controls="register-form" tabindex="-1">Create account</button>
                 </div>
 
-                <div class="auth-card glass">
-                    <div class="tabs" role="tablist" aria-label="Account">
-                        <button class="tab" role="tab" id="tab-login" aria-selected="true" aria-controls="login-form">Sign in</button>
-                        <button class="tab" role="tab" id="tab-register" aria-selected="false" aria-controls="register-form" tabindex="-1">Create account</button>
+                <form class="form" id="login-form" role="tabpanel" aria-labelledby="tab-login" style="display:grid;gap:14px" novalidate>
+                    <div>
+                        <h2>Welcome back</h2>
+                        <p class="muted" style="font-size:.9rem;margin-top:4px">Use your university email and password.</p>
                     </div>
+                    <div class="field">
+                        <label for="login-email">University email</label>
+                        <input id="login-email" type="email" placeholder="you@university.edu" autocomplete="email">
+                    </div>
+                    <div class="field">
+                        <label for="login-password">Password</label>
+                        <div class="pw">
+                            <input id="login-password" type="password" placeholder="Your password" autocomplete="current-password">
+                            <button type="button" data-toggle-password="login-password" aria-label="Show password">Show</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block btn-lg" id="login-submit" type="submit">Sign in</button>
+                </form>
 
-                    <form class="form" id="login-form" role="tabpanel" aria-labelledby="tab-login" novalidate>
-                        <div><h2 style="font-size:1.5rem">Welcome back</h2><p class="faint" style="font-size:.9rem;margin-top:4px">Use your university email and password.</p></div>
-                        <div class="field"><label for="login-email">University email</label><input id="login-email" type="email" placeholder="you@university.edu" autocomplete="email"></div>
-                        <div class="field"><label for="login-password">Password</label><div class="pw"><input id="login-password" type="password" placeholder="Your password" autocomplete="current-password"><button type="button" data-toggle-password="login-password" aria-label="Show password">Show</button></div></div>
-                        <button class="btn btn-primary btn-block" id="login-submit" type="submit">Sign in</button>
-                    </form>
-
-                    <form class="form" id="register-form" role="tabpanel" aria-labelledby="tab-register" novalidate hidden>
-                        <div><h2 style="font-size:1.5rem">Create your account</h2><p class="faint" style="font-size:.9rem;margin-top:4px">It takes under a minute.</p></div>
-                        <div class="field"><label for="reg-name">Full name</label><input id="reg-name" placeholder="Alex Johnson" autocomplete="name"></div>
-                        <div class="field"><label for="reg-studentid">Student ID</label><input id="reg-studentid" placeholder="CS-2026-4091"></div>
-                        <div class="field"><label for="reg-email">University email</label><input id="reg-email" type="email" placeholder="you@university.edu" autocomplete="email"></div>
-                        <div class="field"><label for="reg-password">Password</label><div class="pw"><input id="reg-password" type="password" placeholder="At least 6 characters" autocomplete="new-password"><button type="button" data-toggle-password="reg-password" aria-label="Show password">Show</button></div><span class="hint">Use 6 or more characters.</span></div>
-                        <div class="field"><label for="reg-password-confirm">Confirm password</label><input id="reg-password-confirm" type="password" placeholder="Type it again" autocomplete="new-password"></div>
-                        <button class="btn btn-primary btn-block" id="reg-submit" type="submit">Create account</button>
-                    </form>
-                </div>
+                <form class="form" id="register-form" role="tabpanel" aria-labelledby="tab-register" style="display:grid;gap:14px" novalidate hidden>
+                    <div>
+                        <h2>Create your account</h2>
+                        <p class="muted" style="font-size:.9rem;margin-top:4px">It only takes a minute.</p>
+                    </div>
+                    <div class="field"><label for="reg-name">Full name</label><input id="reg-name" placeholder="Alex Johnson" autocomplete="name"></div>
+                    <div class="field"><label for="reg-studentid">Student ID</label><input id="reg-studentid" placeholder="CS-2026-4091"></div>
+                    <div class="field"><label for="reg-email">University email</label><input id="reg-email" type="email" placeholder="you@university.edu" autocomplete="email"></div>
+                    <div class="field">
+                        <label for="reg-password">Password</label>
+                        <div class="pw">
+                            <input id="reg-password" type="password" placeholder="At least 6 characters" autocomplete="new-password">
+                            <button type="button" data-toggle-password="reg-password" aria-label="Show password">Show</button>
+                        </div>
+                        <span class="hint">Use 6 or more characters.</span>
+                    </div>
+                    <div class="field"><label for="reg-password-confirm">Confirm password</label><input id="reg-password-confirm" type="password" placeholder="Type it again" autocomplete="new-password"></div>
+                    <button class="btn btn-primary btn-block btn-lg" id="reg-submit" type="submit">Create account</button>
+                </form>
             </div>
-        </section>
+        </div>
     </main>
 
     <div id="site-footer"></div>
