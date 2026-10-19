@@ -281,7 +281,46 @@ select option { background: #2b3149; color: var(--ink); }
 
 /* ---------- hero ---------- */
 .hero { padding: 64px 0 52px; }
-.hero-inner { max-width: 780px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 40px; align-items: center; }
+.hero-inner { max-width: 640px; }
+
+/* hero visual: the next upcoming event as a glass ticket, with a tilted empty layer behind it */
+.hero-visual { position: relative; min-height: 340px; }
+.hero-ticket {
+    position: absolute; width: min(100%, 340px);
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    box-shadow: var(--highlight), var(--shadow-2);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    overflow: hidden;
+}
+.hero-ticket-back { top: 0; right: 0; height: 300px; transform: rotate(5deg); }
+.hero-ticket-front { top: 36px; right: 64px; transform: rotate(-3deg); background: rgba(70, 78, 112, .55); color: var(--ink); transition: transform .25s; }
+a.hero-ticket-front:hover { transform: rotate(-2deg) translateY(-4px); }
+.hero-ticket .art {
+    position: relative; height: 112px; border-bottom: 1.5px dashed rgba(255,255,255,.2);
+    background:
+        radial-gradient(120% 140% at 100% 0%, rgba(255,255,255,.16) 0%, transparent 55%),
+        radial-gradient(90% 120% at 0% 100%, rgba(141,151,184,.25) 0%, transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+}
+.hero-ticket .art img { width: 100%; height: 100%; object-fit: cover; }
+.hero-ticket .stub {
+    position: absolute; left: 16px; bottom: -24px; width: 62px; padding: 8px 0 7px;
+    text-align: center; border-radius: 14px; z-index: 1;
+    background: rgba(30, 34, 54, .7); border: 1px solid var(--line); box-shadow: var(--highlight);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+}
+.hero-ticket .stub b { display: block; font: 700 1.45rem/1 var(--f-display); color: var(--ink); }
+.hero-ticket .stub span { font: 600 .66rem/1 var(--f-mono); letter-spacing: .14em; color: var(--ink-3); }
+.hero-ticket .info { padding: 32px 18px 18px; display: grid; gap: 10px; }
+.hero-ticket .info .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-left: 70px; margin-top: -26px; min-height: 24px; font-family: var(--f-mono); font-size: .74rem; color: var(--ink-3); }
+.hero-ticket .info h3 { font-size: 1.1rem; line-height: 1.3; }
+.hero-ticket .info .meta { display: flex; align-items: center; gap: 6px; color: var(--ink-3); font-size: .84rem; }
+.hero-ticket .info .meta svg { width: 15px; height: 15px; flex: none; }
+.hero-ticket .kicker { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+
+/* a single message in a card grid spans the whole row instead of sitting in one column */
+.event-grid > .error-state, .event-grid > .empty { grid-column: 1 / -1; }
 .hero .eyebrow {
     margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 12px; border-radius: 999px; color: var(--ink-2); font-size: .72rem;
@@ -659,6 +698,8 @@ select option { background: #2b3149; color: var(--ink); }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1000px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
     .event-grid { grid-template-columns: repeat(2, 1fr); }
     .detail { grid-template-columns: 1fr; }
     .reg-card { position: static; }
