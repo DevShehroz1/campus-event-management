@@ -14,6 +14,16 @@ async function create(userId, eventId) {
     return data;
 }
 
+async function exists(userId, eventId) {
+    const { count, error } = await supabase
+        .from('registrations')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('event_id', eventId);
+    if (error) throw error;
+    return count > 0;
+}
+
 // userId = null returns every registration (admin view).
 async function list(userId = null) {
     let query = supabase.from('registrations').select(COLUMNS);
@@ -34,4 +44,4 @@ async function remove(userId, eventId) {
     return data.length > 0;
 }
 
-module.exports = { create, list, remove };
+module.exports = { create, exists, list, remove };
