@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+
+# secrets
+.env
+.env.local
+
+# logs and OS files
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# test coverage
+coverage/
