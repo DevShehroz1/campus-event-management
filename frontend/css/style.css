@@ -413,6 +413,10 @@ a.hero-ticket-front:hover { transform: rotate(-2deg) translateY(-4px); }
 }
 .event-card .meta { display: flex; align-items: center; gap: 6px; color: var(--ink-3); font-size: .84rem; }
 .event-card .meta svg { width: 15px; height: 15px; flex: none; opacity: .85; }
+
+/* location line with an icon, used in cards, dashboard rows and the hero ticket */
+.meta { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.meta svg { width: 15px; height: 15px; flex: none; opacity: .85; }
 .event-card .foot {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
     padding-top: 12px; border-top: 1px solid var(--line-soft); margin-top: auto;
