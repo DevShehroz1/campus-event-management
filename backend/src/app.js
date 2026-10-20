@@ -12,7 +12,7 @@ app.disable('x-powered-by');
 app.use(cors({
     // Requests without an Origin header (Postman, curl, server-to-server) are allowed.
     origin(origin, callback) {
-        if (!origin || env.corsOrigins.includes(origin)) return callback(null, true);
+        if (!origin || env.isAllowedOrigin(origin)) return callback(null, true);
         return callback(null, false);
     },
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],

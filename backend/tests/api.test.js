@@ -264,6 +264,31 @@ describe('registrations', () => {
     });
 });
 
+describe('CORS', () => {
+    const allowedOrigin = (res) => res.headers['access-control-allow-origin'];
+
+    test('allows a listed origin and a Vercel preview matching a wildcard entry', async () => {
+        const env = require('../src/config/env');
+        const original = env.isAllowedOrigin;
+        const patterns = [/^https:\/\/campus-event-management-delta\.vercel\.app$/i, /^https:\/\/campus-event-management-[a-z0-9-]+-hok-s-projects\.vercel\.app$/i];
+        env.isAllowedOrigin = (o) => patterns.some((p) => p.test(o));
+        try {
+            const live = await request(app).get('/api/health').set('Origin', 'https://campus-event-management-delta.vercel.app');
+            const preview = await request(app).get('/api/health').set('Origin', 'https://campus-event-management-git-x-hok-s-projects.vercel.app');
+            const other = await request(app).get('/api/health').set('Origin', 'https://evil.example.com');
+            assert.equal(allowedOrigin(live), 'https://campus-event-management-delta.vercel.app');
+            assert.equal(allowedOrigin(preview), 'https://campus-event-management-git-x-hok-s-projects.vercel.app');
+            assert.equal(allowedOrigin(other), undefined);
+        } finally {
+            env.isAllowedOrigin = original;
+        }
+    });
+
+    test('the Vercel entry point exports the same Express app', () => {
+        assert.equal(require('../api/index.js'), app);
+    });
+});
+
 describe('helpers', () => {
     test('toEvent maps database columns to the API shape', () => {
         const e = toEvent({ id: 1, title: 'T', description: 'D', event_date: '2099-01-01', event_time: '10 AM', location: 'L', category: 'sports', capacity: 5, seats_left: 3, organizer: null, prerequisites: null, image_url: null });

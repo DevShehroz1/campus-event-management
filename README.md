@@ -4,8 +4,8 @@
 
 Built as a team mini project to practise full-stack development and real GitHub collaboration: feature branches, issues, pull requests and code review.
 
-- **Live site:** _add the frontend URL after deployment_
-- **API:** _add the backend URL after deployment_ (health check: `/api/health`)
+- **Live site:** https://campus-event-management-delta.vercel.app
+- **API:** https://campushub-api-hok-s-projects.vercel.app/api (health check: `/api/health`)
 
 ## Team Members
 
@@ -47,7 +47,7 @@ Built as a team mini project to practise full-stack development and real GitHub 
 | Auth | JSON Web Tokens (jsonwebtoken), bcryptjs |
 | Testing | Node test runner + Supertest, Postman |
 | Version control / CI | Git, GitHub, GitHub Actions |
-| Deployment | Render (API), Netlify or Vercel (front end) |
+| Deployment | Vercel (front end and API as two projects) |
 
 ## Architecture
 
@@ -169,8 +169,16 @@ See the [`screenshots/`](screenshots/) folder.
 
 ## Deployment notes
 
-- The API runs on Render's free plan, which sleeps after 15 minutes without traffic. The first request after that takes 30–50 seconds, so open `/api/health` a minute before a demo.
-- The service_role key and JWT secret are set as environment variables on Render and are never committed.
+Both parts are deployed on Vercel from this repository, as two projects:
+
+| Vercel project | Root directory | Notes |
+|---|---|---|
+| `campus-event-management` | `frontend` | Static site, no build step |
+| `campushub-api` | `backend` | Express runs as a Vercel Function (`backend/api/index.js`, `backend/vercel.json`) |
+
+- Every push to `main` redeploys both; every pull request gets preview URLs.
+- The API's environment variables (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `CORS_ORIGINS`) are set in the Vercel project settings and are never committed.
+- `CORS_ORIGINS` lists the live site and allows preview deployments with a `*` entry, e.g. `https://campus-event-management-*-hok-s-projects.vercel.app`.
 
 ## License
 
