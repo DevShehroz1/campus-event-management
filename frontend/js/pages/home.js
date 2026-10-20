@@ -106,13 +106,15 @@
         }).join('');
     }
 
+    const FEATURED_COUNT = 6;
+
     function renderFeatured(events) {
         const slot = document.getElementById('home-featured');
         if (!slot) return;
         const upcoming = events
             .filter((e) => !window.ui.isPastDate(e.date))
             .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
-            .slice(0, 3);
+            .slice(0, FEATURED_COUNT);
         if (!upcoming.length) {
             slot.innerHTML = window.ui.emptyStateHTML({
                 icon: '📅',
@@ -127,7 +129,7 @@
 
     async function load() {
         const slot = document.getElementById('home-featured');
-        if (slot) slot.innerHTML = window.ui.skeletonCards(3);
+        if (slot) slot.innerHTML = window.ui.skeletonCards(FEATURED_COUNT);
         renderHeroTicket(null);
         try {
             const events = await window.api.getEvents();
