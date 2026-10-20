@@ -14,6 +14,14 @@ const env = {
         .filter(Boolean)
 };
 
+// An origin entry may contain "*" for one URL segment, e.g. https://my-app-*-team.vercel.app
+// for Vercel preview deployments.
+const originPatterns = env.corsOrigins.map((entry) => new RegExp(
+    `^${entry.split('*').map((part) => part.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('[a-z0-9-]+')}$`,
+    'i'
+));
+env.isAllowedOrigin = (origin) => originPatterns.some((pattern) => pattern.test(origin));
+
 // Fail fast with a readable message instead of a confusing error on the first request.
 // Tests run without real secrets, so they are allowed to skip this check.
 if (!isTest) {
